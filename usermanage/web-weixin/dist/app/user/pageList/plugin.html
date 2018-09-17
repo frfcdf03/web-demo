@@ -1,0 +1,58 @@
+<template>
+        <button class="btn btn-secondary dropdown-toggle" style="margin:10px" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Page {{page}}
+            </button>
+            <div id = "dropdownDiv">
+
+             
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id ="dropdown-m">
+              {{each data}}
+              <div>
+                      <a class="dropdown-item" href="#" data="{{$value.id}}" onclick="$f('pageList.helper',$(this).attr('data'))"> page {{$value.id}}</a>
+              </div>
+              {{/each}}
+      </div>
+</div>
+    </template>
+    <script>
+        $f("df","__",function(_page,_cpage){
+            console.log("*************");
+       $f("ajax.get",$f("server","user/countUser"),{num:0},"__.count",_page,_cpage)();
+        
+        
+        //  for (var i = 0; i<=total; i++) {
+        //     _data[i] = i; 
+        // }
+
+        // var data = {num:_data};
+        //  var html = template.render(_page,data);
+         
+        
+        //$("#dropdownDiv").html(html);
+       
+        
+    });
+
+    $f("df","__.count",function(_data,_page,_cpage){
+        var total= (_data[0].namecount)/10;
+        console.log("*******"+total);
+        var _data = new Array();
+            for (var i = 0; i<total; i++) {
+            _data[i] = {id:i+1}; 
+        }
+        console.log(_data);
+
+        var data = {data:_data,page:(_cpage+1)};
+        console.log(data);
+        var html = template.render(_page,data);
+        document.getElementById('listContent').setAttribute("tpage",_data.length);
+        $("#dropdownMain").html(html);
+     });  
+
+     $f("df","pageList.helper",function(_data){
+        $('#dropdownMenuButton').html('Page '+_data);
+        document.getElementById('listContent').setAttribute("data",_data);
+        $f("plugin","user.listPage",(_data-1));
+     });
+     
+    </script>

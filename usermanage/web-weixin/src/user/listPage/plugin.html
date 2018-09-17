@@ -1,0 +1,55 @@
+<template>
+        <style>
+                .table-condensed {
+                /* width: 90% !important; */
+                font-size: 13px;
+                }
+                </style>
+        <div class="container">
+                <table class="table table-condensed">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Tel:</th>
+                      <th>Password</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {{each data}}
+                    <tr>
+                      <td>{{$value.username}}</td>
+                      <td>{{$value.tel}}</td>
+                      <td>{{$value.password}}</td>
+                      <td>                            
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                            <button id="buttonDel" type="button" class="btn btn-danger" data ="{{$value.id}}" onclick= "$f('plugin','user.delUser',$(this).attr('data'))">Del</button>
+                            <button id="buttonEdit" type="button" class="btn btn-success" data ="{{$value.id}}" onclick= "$f('plugin','user.updateUser',$(this).attr('data'))">Edit</button>
+                          </div>
+                      </td>
+                    </tr>
+                  {{/each}}
+                  </tbody>
+                </table>
+              </div>
+</template>
+<script>
+    $f("df",__,function(_page,_data){
+      $f("ajax.get",$f("server","user/listUser"),{start:_data*10,end:10},"fillpage",_page)();
+    // $(window).scroll(function() {
+    // if($(window).scrollTop() == $(document).height() - $(window).height()) {
+    //   $("#listContent").append(_page);
+    // }
+// });
+        //$("#buttonEdit").click(function(){$f("plugin","user.updateUser",0);});
+        // $('button[class^="btn btn-success"]').click(function(){$f("plugin","user.updateUser",0);});
+        // $('button[class^="btn btn-danger"]').click(function(){$f("plugin","user.delUser",0);})
+        //$("#buttonedit").click($f("plugin","user.updateUser",0));
+        $f("df","searchUser",function(username){
+       $f("ajax.get", $f("server","user/sUser"),{username:username},"fillpage",_page)();
+     });
+    } );
+
+     
+
+</script>

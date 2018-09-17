@@ -1,0 +1,24 @@
+# 首页广告栏
+some:
+  url: archive/home
+  attr:
+    a: 1
+  rtn:
+    a: 1
+    b: 2
+#api test
+apitest:
+  url: api/all
+  attr:
+    a: 1
+  rtn:
+    a: 1
+    b: 2
+#api test
+apiName:
+  url: someApi
+  attr:
+    a: 1
+  rtn:
+    a: 3
+    b: 4

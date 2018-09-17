@@ -1,0 +1,33 @@
+<template>
+        <div class="modal fade" id="delModal"  tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Warning</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <p>Are you sure you want to delete this User?</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button id="wtf" type="button" class="btn btn-primary" data-dismiss="modal" data ="" onclick= "$f('ajax.get',$f('server','/user/delUser'), {id:$(this).attr('data')}, 'printResult',parseInt($('#listContent').attr('data'))-1)()">Confirm</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+</template>
+<script>
+    $f("df",__,function(_page,_id){
+        $("#modalDiv").html(_page);
+        $("#delModal").modal("show");
+        document.getElementById('wtf').setAttribute("data",_id);
+        $f("plugin","user.pagelist",parseInt($('#listContent').attr('data'))-1);
+         
+    });
+    $f("df","deletetest",function(_data){
+     
+    });
+</script>
