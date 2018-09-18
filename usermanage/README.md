@@ -2,15 +2,15 @@
 
 1.  Directory Breakdown
 
-backend:Backend Stuffs.
+    backend:Backend Stuffs.
 
-web-weixin:Frontend Stuff.
+    web-weixin:Frontend Stuff.
 
-wiki:Document for methods.
+    wiki:Document for methods.
 
-.gitighore:Filter files for git.
+    .gitighore:Filter files for git.
 
-README:read me!!
+    README:read me!!
 
 1.  Instruction for localhost 
     1.  Open the frontend project.
