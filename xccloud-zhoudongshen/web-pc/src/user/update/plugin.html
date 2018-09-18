@@ -1,0 +1,109 @@
+<template>
+
+	<div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="exampleModalLabel">用户修改</h4>
+				</div>
+				<div class="modal-body">
+					<form >
+                        <input type="hidden" name="id" id="id" value="{{data.id}}">
+						<input type="hidden" name="page" id="page" value="{{data.page}}">
+
+						<div class="form-group">
+							<label for="user-name" class="control-label">姓名:</label>
+							<input type="text" class="form-control" id="user-name" name="name" value="{{data.user_name}}">
+						</div>
+						<div class="form-group">
+							<label for="user-telephone" class="control-label">手机号:</label>
+							<input type="text" class="form-control" id="user-telephone" name="telephone" readonly="readonly"  value="{{data.user_phone}}">
+						</div>
+						<div class="form-group">
+							<label for="user-password" class="control-label">密码:</label>
+
+							<input type="password" class="form-control" id="user-password" name="password" value="{{data.user_pwd}}">
+						</div>
+						<div class="form-group">
+							<label for="identity" class="control-label">身份:</label>
+							<select class="form-control" id="identity" name="identity">
+								<option value=0> 管理员</option>
+								<option value=1> 普通用户</option>
+							</select>
+						</div>
+
+
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="submitButton">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</template>
+
+<script>
+    $f("df", __, function(_page,_data) {
+		// console.info(_data);
+        curr=_data.currPage;
+        $f("ajax.get",$f("server","users/selectById"), {id:_data.id}, "__.yml",_page,curr)();
+    });
+    $f("df","__.yml",function(_data,_page,curr){
+        var data={data:_data[0]};
+
+        var html=template.render(_page, data);
+
+        $("#modelDiv").html(html);
+        $("#updateUserModal").modal("show");
+
+        $("#submitButton").click(function(){
+
+            //校验
+            var userName = $("#user-name").val();
+            var userTele = $("#user-telephone").val();
+            var userPwd =$("#user-password").val();
+
+            if (userName==null||userName==undefined||userName==""){
+                alert("名字不能为空");
+                return false;
+            }else if(userName.length>20){
+                alert("输入的名字过长");
+                return false;
+            }else if (!(/^1[34578]\d{9}$/.test(userTele))){
+                alert("输入的手机号不对，请重新输入")
+            }else if (userPwd==null||userPwd==undefined||userPwd==""){
+                alert("密码不能为空");
+                return false;
+            } else if(userPwd.length>20){
+                alert("输入的密码过长");
+                return false;
+            }else {
+                $("#updateUserModal").modal("hide");
+                //发送修改请求
+                $f("ajax.post",$f("server","users/updateUser"), $("form").serialize(), "__.updateUser",_page,curr)();
+            }
+
+
+
+        });
+
+    });
+
+    $f("df","__.updateUser",function(_data,_page,curr){
+
+        console.log(_data.affectedRows);
+        if(_data.affectedRows==1){
+            alert("修改成功");
+
+            $f("plugin", "user.search", {page:curr,pageSize:10});
+        }else{
+            alert("修改失败");
+        }
+
+    })
+
+</script>

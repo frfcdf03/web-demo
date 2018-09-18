@@ -1,0 +1,78 @@
+<template>
+    <style>
+        span.weui-media-box__desc>p{
+            display: inline-block;
+        }
+    </style>
+    {{each data as value i}}
+
+    {{if data[i].paintings_list!=0}}
+    <div   onclick="$f('plugin', 'paintings.paintingsList.taozhuangList.detail',{{value.type_id}})">
+        <a href="#f->plugin paintings.paintingsList.taozhuangList.detail {{value.type_id}}">
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__hd" style="display: flex;float: right">{{value.price}}</div>
+                <div class="weui-panel__hd">{{value.type_name}}</div>
+
+                <div class="weui-panel__hd">简介：{{value.content}}</div>
+                <div class="weui-panel__bd" >
+                {{each data[i].paintings_list as value2 j}}
+                {{if j<=2}}
+                    <a href="#f->plugin paintings.paintingsList.taozhuangList.detail {{value.type_id}}" class="weui-media-box weui-media-box_appmsg" >
+                        <div class="weui-media-box__hd">
+                            <img class="weui-media-box__thumb" src= "{{value2.paintings_img}}" alt="">
+                        </div>
+                        <div class="weui-media-box__bd">
+                            <h4 class="weui-media-box__title">{{value2.paintings_name}}</h4>
+                            {{if value2.paintings_content!=null}}
+                                {{if value2.paintings_content.length>70 }}
+                                <span  class="weui-media-box__desc">简介：{{#value2.paintings_content.substring(0,70)}}...</span>
+                                {{else}}
+                                <span  class="weui-media-box__desc">简介：{{#value2.paintings_content}}</span>
+                                {{/if}}
+                           
+                            {{else}}
+                                <span  class="weui-media-box__desc">简介：</span>
+                            {{/if}}
+                        </div>
+                    </a>
+                {{/if}}
+                {{/each}}
+ 
+            </div>
+
+
+        </div>
+    </div>
+    <br>
+    {{/if}}
+    {{/each}}
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+        window.history.pushState(null,null,"#f->plugin home 0");
+        window.history.pushState(null,null,"#f->plugin paintings.paintingsList.taozhuangList {pid:6}");
+        if(typeof(_data)!="object"){
+            var _data=eval("("+_data+")");
+        }
+        var pid =_data.pid;
+        $f("ajax.get", $f("server", "paintings/getPaintingsList"), { pid: pid  }, "___.taozhuang", _page)();
+
+    });
+
+
+    $f("df", "___.taozhuang", function (_data, _page) {
+
+        var data = {
+            data: _data,
+
+        };
+        var html = template.render(_page, data)
+        if($("#paintingsList_content").length==0){
+            $f("plugin","paintings.paintingsList",1);
+        }
+        $("#paintingsList_content").html(html);
+        $("#taozhuang").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+
+
+    });
+</script>

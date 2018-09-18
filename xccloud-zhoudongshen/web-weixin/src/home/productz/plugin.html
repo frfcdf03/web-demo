@@ -1,0 +1,43 @@
+<template>
+   
+        {{each data}}
+        <div style="border: 0px solid #a08484;margin: 10px;">
+            <div class="{{$value.id}}span" style="border-bottom: 1px solid #a08484;margin: 10px;">
+                  <span style="margin: 10px 0px 10px 15px;color:#907B2C;">{{$value.type_name}}</span>
+            </div>
+            <div class="page__bd page__bd_spacing">                       
+            <div class="{{$value.id}}class" id="{{$value.id}}"  pid="{{$value.id}}">
+                
+            </div>
+        </div>
+        </div>                      
+              
+        {{/each}}
+   
+</template>
+<script>
+$f("df", ___, function(_page,_data) {
+  
+var divclass = _data.divclass;
+var pid = _data.pid;   
+$f("ajax.get",$f("server","paintings/productepe"), {pid:pid}, "___.listPageCon",_page,divclass)();
+
+});
+
+
+$f("df","___.listPageCon",function(_data,_page,divclass){
+ 
+ var data={data:_data};
+ var html=template.render(_page, data)
+ $("."+divclass).html(html);
+ 
+ //遍历出查询到的那个套装的id
+ for(var i= 0;i<_data.length;i++){  
+            var pid = _data[i].id;   
+           // console.log(pid)      
+            $f("plugin", "home.produclist", {pid:pid,divclass:pid+"class",classspan:pid+"span"});
+        }  
+});
+
+
+</script>

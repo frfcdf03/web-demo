@@ -1,0 +1,97 @@
+<template>
+    <div style="padding: 1em">
+
+        <h1 align="center">{{data[0][0].type_name}}</h1>
+
+        <div align="right">
+            <ul class="weui-media-box__info" style="float: right">
+                <span class="weui-media-box__info__meta " follow ="{{data[0][0].follow}}" data="{{data[0][0].id}}" data2 ="7" onclick = "$f('follow',this,0)">
+
+                    {{if data[0][0].follow==0}}
+                   <img src="img/icons8-heart-26.png" style="height:22px;width:22px ;position: relative; top: 3px;">
+                    {{else}}
+                    <img src="img/icons8-heart-filled-50.png" style="height:22px;width:22px;position: relative; top: 3px;">
+                    {{/if}}
+                    <span data="{{data[0][0].lookCount}}">{{data[0][0].lookCount}}</span>
+                </span>
+            </ul>
+        </div>
+        {{each data[1] as value i}}
+        <div align="left">
+            <div>
+                <label>编号：</label>
+                <span>{{value.paintings_id}}</span>
+            </div>
+
+            <div>
+                <label>规格尺寸：</label>
+                <span>{{value.paintings_spec}}</span>
+            </div>
+            <div>
+                <label>创作年代：</label>
+                <span>{{value.paintings_year}}</span>
+            </div>
+        </div>
+        <div align="center" >
+            <img src="{{value.paintings_img}}" style="width:100%;height:100%">{{value.paintings_name}}</img>
+        </div>
+        <div align="center" id="price_content" style="height:100%;">
+
+        </div>
+
+        {{/each}}
+        <div>{{data[0][0].content}}</div>
+
+        <div id="liuyan_content">
+
+        </div>
+    </div>
+</template>
+<script>
+
+    $f("df", ___, function (_page, _data) {
+        //     $f("plugin.startTest",'__');
+        var id=_data;
+        //window.history.forward(1);
+        $f("ajax.get", $f("server", "paintings/selectPaintings"), { id:id  }, "___.xieliedetail", _page,id)();
+
+    });
+    $f("df", "___.xieliedetail", function (_data, _page,_id) {
+
+        var data = {
+            data: _data
+        };
+
+        $f("plugin","message",{type:7,id:_id});
+        var html = template.render(_page, data)
+        console.log(data);
+
+        $("#container").html(html);
+        $('body').prop('scrollTop', '0');
+        console.log(document.images[1].src);
+        wx.onMenuShareAppMessage({
+            title: data.data[0][0].type_name, // 分享标题
+            desc:  data.data[0][0].content, // 分享描述
+            link: $f("get", "domain") + "/wx-redirect?plugin=paintings.paintingsList.xilieList.detail&param=" + _id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: document.images[1].src, // 分享图标
+            trigger: function (res) {
+                // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+            },
+            success: function (res) {},
+            cancel: function (res) {},
+            fail: function (res) {}
+        });
+        wx.onMenuShareTimeline({
+            title: data.data[0][0].type_name, // 分享标题
+            link: $f("get", "domain") + "/wx-redirect?plugin=paintings.paintingsList.xilieList.detail&param=" + _id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+           imgUrl: document.images[1].src,  // 分享图标
+            trigger: function (res) {
+                // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+            },
+            success: function (res) {},
+            cancel: function (res) {},
+            fail: function (res) {}
+        });
+
+    });
+</script>

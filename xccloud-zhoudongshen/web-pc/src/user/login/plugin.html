@@ -1,0 +1,89 @@
+<template>
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="exampleModalLabel">登陆</h4>
+				</div>
+				<div class="modal-body">
+					<form >
+						<div class="form-group">
+							<label for="recipient-name" class="control-label">用户名：</label>
+							<input type="text" class="form-control" id="login-name" name="name">
+
+						</div>
+						<div class="form-group">
+							<label for="recipient-name" class="control-label">密码:</label>
+							<input type="password" class="form-control" id="login-password" name="password">
+						</div>
+
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="confirm" onclick="$f('__.helper',{username:$('#login-name').val(),password:$('#login-password').val()})">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+<script>
+    $f("df",__,function(_page){
+        $('#login').html(_page);
+        $("#loginModal").modal("show");
+    });
+    $f("df","__.helper",function(_data){
+            var password = _data.password;
+            var username = _data.username;
+            console.log(username+password); 
+           //初步验证用户名与密码
+            if (username==null||username==undefined||username==""){
+                alert("用户名不能为空");
+                return  ;
+            }
+            if(username.length>20){
+                alert("输入的用户名过长");
+                return  ;
+            }
+            if (password==null||password==undefined||password==""){
+                alert("密码不能为空");
+                return  ;
+            }
+            if(password.length>20){
+                alert("输入的密码过长");
+                return  ;
+            }
+            $f("ajax.post",$f("server","users/login"),_data, "__.helper2",0)();
+    });
+
+    $f("df","__.helper2",function(_data,val){
+        console.log(_data);
+        if(_data.length>0)
+        {
+            alert("登陆成功");
+            $("#loginModal").modal("hide");
+            $("#login").attr("data",_data[0].user_name);
+            $("#loginName").html("欢迎用户： "+_data[0].user_name);
+            $("#loginbtn").css("display","none");
+            $("#loginName").css("display","block");
+            $("#logoutbtn").css("display","block");
+            //console.log(_data[0].user_name);
+            //console.log($("#login").attr("data"));
+        }
+        else{
+            alert("登陆失败，用户名/密码错误");
+        }
+    });
+    
+    $f("df","logout",function(_data){
+        console.log("logout test");
+        if(confirm("确认退出吗？")){
+        $("#loginbtn").css("display","block");
+        $("#login").attr("data","");
+        $("#loginName").html("");
+        $("#loginName").css("display","none");
+        $("#logoutbtn").css("display","none");
+        }
+    });
+</script>

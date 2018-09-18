@@ -1,0 +1,310 @@
+<template>
+    <style>
+        ul {
+            margin: 10px 0px 10px 0px;
+        }
+
+        li {
+            float: left;
+            list-style: none;
+            width: 25%;
+            text-align: center;
+
+        }
+
+        li img {
+            width: 20px;
+            margin: 5px;
+
+        }
+
+        li span {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .paintingType {
+            width: 80px;
+            background: #907B2C ;
+            color: #fff;
+            text-align: center;
+            padding: 1px;
+            margin: 0 auto;
+            border-radius: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .weui-flex__item {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            text-align: center;
+        }
+
+        .paintingF {
+            width: 80px;
+            height: 60px;
+        }
+
+        .paintingFD {
+            width: 100px;
+            height: 100px;
+        }
+
+        .paintingName {
+            display: block;
+            font-size: 14px;
+        }
+
+        .paintingSize {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            white-space: nowrap;
+        }
+
+        .paintingRadius {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .paintingYD {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .hdzx {
+            width: 100%;
+            height: 45vw;
+                   
+            text-align: center;
+            
+            background: center;
+            background-size: cover;
+
+        }
+
+        .clickimg {
+            border: 1px solid #c5c0c0;
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0px 0px 2px 2px #e4e0e0;
+            height: 30px;
+            width: 30px;
+            margin: 0 auto;
+        }
+
+        .swiper-slide>img {
+            width: 100%;
+            height: 200px;
+        }
+        .sp1{
+            font-size: 4vw;      
+        }
+    </style>
+    <div class="page">
+
+        <!-- <img src="img/index-1.png" style="width:100%"> -->
+        <!-- <embed src="https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&v=20161117&vid=v07261u76u8&auto=0" allowFullScreen="true" quality="high" width="100%" height="400" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed> -->
+         <iframe style="height: 300px" frameborder="0" width="100%" src="https://v.qq.com/iframe/player.html?vid=v07261u76u8&tiny=0&auto=0"></iframe> 
+       <!-- <embed src="https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&v=20161117&vid=v07261u76u8&auto=0" allowFullScreen="true" quality="high" width="480" height="400" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>-->
+	<ul>
+            <li onclick="$f('plugin', 'other.artist', this);">
+                <a href="#f->plugin other.artist">
+                    <div class="clickimg">
+                        <img src="img/ysj.png">
+                    </div>
+                    <span class="sp1">艺术家</span>
+                </a>
+            </li>
+            <li onclick="$f('plugin', 'other.contact', this);">
+                <a href="#f->plugin other.contact">
+                    <div class="clickimg">
+                        <img src="img/phone.png">
+                    </div>
+                    <span class="sp1">联系我们</span>
+                </a>
+            </li>
+            <li>
+                <a>
+                    <div class="clickimg">
+                        <img src="img/zhibo.png">
+                    </div>
+                    <span class="sp1">图文直播</span>
+                </a>
+            </li>
+            <li>
+                <a>
+                    <div class="clickimg" onclick="$f('plugin', 'faxian', this);">
+                        <img src="img/zixun.png">
+                    </div>
+                    <span class="sp1">资讯</span>
+                </a>
+            </li>
+        </ul>
+        <!-- 轮播-->
+        <div style="padding-top: 80px;" >
+            <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="300" style="height: 200px">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="img/swiper-1.png" alt="">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/swiper-2.png" alt="">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/swiper-3.png"
+                            alt="">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/swiper-4.png"
+                            alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--有背景图片的div-->
+        <div style="background-image: url(img/web-bj.gif);">
+            <!--金奖作品-->
+            <div>
+                <img src="img/gs1_011.png" style="width: 100%">
+                <div class="paintingType">
+                    金奖作品
+                </div>
+                <div class="classspan"></div>
+                <div class="produclist page__bd page__bd_spacing" pid="12" id="produclist">
+                       
+                </div>
+             
+            </div>
+            <!--套装作品-->
+            <div>
+                <img src="img/gs1_011.png" style="width: 100%">
+                <div class="paintingType">
+                    主题作品
+                </div>
+                <div pid="6"  class="productz" id="productz">
+
+                </div>
+
+            </div>
+            <!--单幅作品-->
+            <div>
+                <img src="img/gs1_011.png" style="width: 100%">
+                <div class="paintingType">
+                    单幅作品
+                </div>
+                <div class="produclistdf page__bd page__bd_spacing" pid="11" id="produclistdf">
+                       
+                </div>
+               
+            </div>
+            <!--线下活动-->
+            <div>
+                <img src="img/gs1_011.png" style="width: 100%">
+                <div class="paintingType">
+                    线下活动
+                </div>
+                
+                <div style="background-image: url('img/123.png');" class="hdzx">
+                    <span style="padding-top: 13%;display: block">
+                        <span style="font-size: 18px;color: #fff;display: block;">
+                        版画技师交流会
+                            </span>
+                            <span style="font-size: 14px;color: #fff;display: block">
+                        2018年6月1——6月3
+                        </span>
+                    </span>
+                </div>
+            
+            </div>
+            <!--线上活动-->
+            <div>
+                <img src="img/gs1_011.png" style="width: 100%">
+                <div class="paintingType">
+                    线上活动
+                </div>
+
+                <div class="onlineactivitieLists" pid="4">
+               
+                </div>
+            </div>
+            <!--新闻-->
+                <div id="100" >
+                    <img src="img/gs1_011.png" style="width: 100%">
+                    <div class="paintingType">
+                        新闻资讯
+                    </div>
+                    
+                    <div class="newsLists" pid="2" >
+                        
+                    </div>
+                
+                </div>
+        
+            <div style="display: none;" id="iosDialog2">
+                <div class="weui-mask"></div>
+                <div class="weui-dialog">
+                    <div class="weui-dialog__hd">
+                        <strong class="weui-dialog__title">弹窗标题</strong>
+                    </div>
+                    <div class="weui-dialog__bd">弹窗内容，告知当前页面信息等</div>
+                    <div class="weui-dialog__ft">
+                        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", ___, function (_page) {
+        //$f("plugin.startTest", '__');
+        $("title").html("周东申艺术馆");
+        window.history.pushState(null,null,"#f->plugin home 1");
+        $("#home").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $f("ajax.post", null, null, "___.home", _page)();
+    });
+
+    $f("df", "___.home", function (_data, _page) {
+        
+        var html = template.render(_page, _data)
+
+        $("#container").html(html);
+        // $(".swiper-container").swiper(config)
+        var mySwiper = new Swiper('.swiper-container', {
+
+            autoplay: true,//可选选项，自动滑动
+            pagination : '.swiper-pagination',
+        });
+       
+
+       //下面是调用金奖作品的展示
+        var pid = $(".produclist").attr("pid");
+        $f("plugin", "___.produclist", {pid:pid,divclass:"produclist",classspan:"classspan"});
+         //下面是调用单幅作品的展示
+        var pid = $(".produclistdf").attr("pid");
+        $f("plugin", "___.produclist", {pid:pid,divclass:"produclistdf",classspan:"classspan"});
+        //下面是调用套装作品的展示
+        var pid = $(".productz").attr("pid");
+        $f("plugin", "___.productz", {pid:pid,divclass:"productz"});
+        //下面是调用5条新闻的展示
+        var pid = $(".newsLists").attr("pid");
+        $f("plugin", "___.newslists", {pid:pid,divclass:"newsLists"});
+        //下面是调用5条线上活动的展示
+        var pid = $(".onlineactivitieLists").attr("pid");
+        $f("plugin", "___.newslists", {pid:pid,divclass:"onlineactivitieLists"});
+        //下面是调用5条线下活动的展示
+        //var pid = $(".activitieLists").attr("pid");
+        //$f("plugin", "___.newslists", {pid:pid,divclass:"activitieLists"});
+      
+      
+        
+       
+    });
+</script>

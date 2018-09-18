@@ -1,0 +1,45 @@
+<template>
+    <style>
+        .pagecontent {
+            margin-top: 100px;
+            text-align: center;
+
+        }
+
+        hr {
+            width: 100px;
+            display: inline-block;
+            margin: 5px;
+        }
+        .phone > p{
+            margin: 5px;
+        }
+    </style>
+    <div class="pagecontent">
+        <hr>
+        <span style="color: #09BB07">艺术家信箱</span>
+        <hr>
+        <div style="margin-top: 10px">fmyskj@126.com</div>
+    </div>
+    <div class="pagecontent">
+        <hr>
+        <span style="color: #09BB07">联系方式</span>
+        <hr>
+        <div style="margin-top: 10px" class="phone">
+            <p>+86&nbsp;531&nbsp;82961666</p>
+            <p>13964193666</p>
+            <p>15650088752</p>
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+        var data = {data: _data};
+        var html = template.render(_page, data);
+        $("#container").html(html);
+
+    });
+
+
+</script>

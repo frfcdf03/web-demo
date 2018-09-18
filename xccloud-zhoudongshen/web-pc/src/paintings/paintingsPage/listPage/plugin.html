@@ -1,0 +1,181 @@
+<template>
+    <style>
+        .astyle{
+            text-decoration: underline;
+        }
+    </style>
+
+    <br>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">编号</th>
+            <th scope="col">名称</th>
+            <th scope="col">规格和尺寸</th>
+            <th scope="col">创作时间</th>
+            <!--<th scope="col">分类</th>-->
+            <th scope="col">关注度</th>
+            <th scope="col">当前价格</th>
+            <th scope="col">状态</th>
+            <th scope="col">库存</th>
+            <th scope="col">操作</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {{each data as data i}}
+        <tr>
+            <td scope="row"> {{data.paintings_id}}</td>
+            <td>{{data.paintings_name}}</td>
+            <td>{{data.paintings_spec}}</td>
+            <!-- <td><a class="open_with_newtab" href="{{data.paintings_img}}" target="_blank">{{data.paintings_img}}</a></td>//年代 -->
+            <td>{{data.paintings_year}}</td>
+            <!--<td>{{data.type_name}}</td>-->
+            <td>{{data.lookCount}}</td>
+            <td>
+                <a  class="toPaintingsPrice astyle" data-id="{{data.id}}" data-name="{{data.paintings_name}}">
+                    {{if data.price==null}}
+                    <span>暂无</span>
+                    {{else}}
+                    <span>{{data.price}}</span>
+                    {{/if}}
+                </a>
+            </td>
+            <td>
+                <a  class="toPaintingsEdition astyle" data-id="{{data.id}}" data-name="{{data.paintings_name}}">
+                  库存情况
+                </a>
+            </td>
+            <td>
+                {{if data.paintings_state==0}}
+                <a  class="btn-changeState astyle" data-id="{{data.id}}" data-state="1">上架
+                </a>
+                {{else}}
+                <a  class=" btn-changeState astyle" data-id="{{data.id}}" data-state="0">下架
+                </a>
+                {{/if}}
+            </td>
+            <!--<td>{{data.paintings_name}}</td>//状态-->
+
+            <td>
+                <a class="btn btn-warning btn-sm paintingsDelete" data="{{data.id}}">删除</a>
+                <a class="btn btn-info btn-sm paintingsUpdate" data="{{data.id}}">修改</a>
+            </td>
+
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        var page= _data.page;
+        var pageSize =  _data.pageSize;
+        var paintings_id = _data.paintings_id;
+        var paintings_sort = _data.paintings_sort;
+        var paintings_type =_data.paintings_type;
+        if(paintings_type==0){
+            $f("ajax.get", $f("server", "paintings/getAllPaintings"), {
+                page: page, pageSize:pageSize, paintings_id:paintings_id,paintings_sort:paintings_sort
+            }, "__.listPage",_page,_data)();
+        }else {
+
+            $f("ajax.get", $f("server", "paintings/getTypePaintings"), {
+                page: page, pageSize:pageSize, paintings_id:paintings_id,paintings_sort:paintings_sort,paintings_type:paintings_type
+            }, "__.listPage", _page,_data)();
+
+        }
+
+    });
+
+    $f("df", "__.listPage", function (_data, _page,_param) {
+        var data = {data: _data[0]};
+        console.log(data);
+        var html = template.render(_page, data);
+        $("#listContent").html(html);
+
+        //分页
+        $('#callBackPager').extendPagination({
+            totalCount: _data[1][0].totalCount,
+            limit:8,
+            defaultPage:_data[2].currPage,
+            callback: function (curr, limit, totalCount) {
+
+                $f("plugin", "paintings.paintingsPage.listPage", {
+                    page: curr, pageSize: limit,paintings_id:_param.paintings_id,
+                    paintings_sort:_param.paintings_sort,paintings_type:_param.paintings_type
+                });
+            }
+        });
+
+        //跳转价格
+        $(".toPaintingsPrice").click(function () {
+            var paintingsId = $(this).attr("data-id");
+            var paintingsName=$(this).attr("data-name");
+            $f("plugin", "paintings.paintingsPrice", {type:1, id:paintingsId,name:paintingsName});
+        });
+        
+        //跳转版本
+        $(".toPaintingsEdition").click(function () {
+            var id = $(this).attr("data-id");
+            var paintingsName=$(this).attr("data-name");
+            $f("plugin", "paintings.paintingsEdition", {paintingsId:id,name:paintingsName});
+        });
+
+        //上下架操作
+        $('.btn-changeState').click(function () {
+            var id = $(this).attr("data-id");
+            var state = $(this).attr("data-state");
+            $f("ajax.get", $f("server", "paintings/changeState"), {id: id, state: state}, "__.state", state,_param)();
+        });
+
+        //删除
+        $('.paintingsDelete').click(function () {
+            var id = $(this).attr("data");
+            if(confirm("确认删除吗")){
+            $f("ajax.get", $f("server", "paintings/deletePaintings"), {id: id,type:5}, "__.deleteEnd",_param)();
+            }
+        });
+
+        //修改
+        $(".paintingsUpdate").click(function () {
+            var id = $(this).attr("data");
+            $f("plugin", "paintings.paintingsPage.update", {id: id},_param);
+        });
+
+    });
+
+    //上下架操作
+    $f("df", "__.state", function (_data, state,_param) {
+        var data = _data;
+        console.log(data);
+        var message;
+        if (state == 1) {
+            message = "上架成功！";
+        } else {
+            message = "下架成功！";
+        }
+        if (data.affectedRows == 1 && data.changedRows == 1) {
+            alert(message);
+            $f("plugin", "paintings.paintingsPage.listPage", _param);
+        } else {
+            alert(message);
+        }
+    });
+
+
+    //删除画作
+    $f("df", "__.deleteEnd", function (_data,_param) {
+        var data = _data;
+        console.log(data);
+        if (data.affectedRows >= 1) {
+            alert("删除成功！");
+            $f("plugin", "paintings.paintingsPage.listPage", _param);
+        } else {
+            alert("删除失败！");
+        }
+    });
+
+</script>
+

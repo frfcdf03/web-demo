@@ -1,0 +1,160 @@
+<template>
+<style>
+    .toBottom{
+        display: inline-block;
+        position: relative;
+        left: 21px;
+        font-size: 12px;
+    }
+
+    a{
+        color: #000;
+    }
+    .weui-media-box__desc p{
+        display: inline;
+    }
+</style>
+            {{each data[0] as value i}}
+            {{if value.e_type_id!=0}}
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__bd" >
+                       
+                    <div class="weui-panel weui-panel_access">
+                            {{if value.e_type_id != 6 &&  value.e_type_id != 5 &&  value.e_type_id != 0 &&  value.e_type_id != 7 }}
+                            <a href="#f->plugin faxian.news.detail {{value.eid}}" class="weui-media-box weui-media-box_appmsg"style="padding-bottom: 0px;">
+                                {{else}}
+                                {{if value.state2 == 1}}    
+                                    {{if value.e_type_id == 5}}
+                                        <a href="#f->plugin paintings.detail {{value.eid}}" class="weui-media-box weui-media-box_appmsg"style="padding-bottom: 0px;">
+                                    {{/if}}  
+                                    {{if value.e_type_id == 6}}
+                                        <a href="#f->plugin paintings.paintingsList.taozhuangList.detail {{value.eid}}" class="weui-media-box weui-media-box_appmsg"style="padding-bottom: 0px;">
+                                    {{/if}}
+                                    {{if value.e_type_id == 7}}
+                                        <a href="#f->plugin paintings.paintingsList.xilieList.detail {{value.eid}}" class="weui-media-box weui-media-box_appmsg"style="padding-bottom: 0px;">
+                                    {{/if}}
+                                {{else}}
+                                        <a onclick="alert('已售罄');">
+                                {{/if}}
+                                {{/if}}
+                        <!-- <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg"> -->
+                            <div class="weui-media-box__hd">
+                                {{if value.img!=null }}
+                                <img class="weui-media-box__thumb" src="{{value.img}}" alt="">
+                                {{else}}
+                                {{if value.e_type_id==1||value.e_type_id==2||value.e_type_id==3}}
+                                <img class="weui-media-box__thumb" src="https://png.icons8.com/ios/100/e74c3c/megaphone-filled.png" alt="">
+                                {{/if}}
+                                {{if value.e_type_id==4}}
+                                <img class="weui-media-box__thumb" src="https://png.icons8.com/color/96/e74c3c/calendar.png">
+                                {{/if}}
+                                {{if value.e_type_id==5||value.e_type_id==6||value.e_type_id==7}}
+                                <img class="weui-media-box__thumb" src="https://png.icons8.com/color/96/e74c3c/picture.png">
+                                {{/if}}
+                                {{/if}}
+
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <h4 class="weui-media-box__title">{{value.title.substring(0,8)}}</h4>
+                                {{if value.content!=null }}
+                                <span  class="weui-media-box__desc">{{#value.content.split("&nbsp;").join("").substring(0,40)}}</span>
+                                {{else}}
+                                <span  class="weui-media-box__desc">暂无简介</span>
+                                {{/if}}
+                            </div>
+                        </a>
+                    </a>
+                            <p class="toBottom" style=" color: #6a78dc;"> {{value.type_name}}</p>
+                            <p class="toBottom" style=" color: #999;"> {{if value.create_time != null}}{{value.create_time.substring(0,10)}}{{/if}}</p>
+                            <ul class="weui-media-box__info" style="float: right; margin-top: 0px">
+                                <li class="weui-media-box__info__meta " style="margin-bottom: 10px;" follow ="{{value.follow}}" data="{{value.eid}}" data2 ="{{value.e_type_id}}" onclick = "$f('follow',this,0)">
+                                    {{if value.follow==0}}
+                                    <img src="img/icons8-heart-26.png" style="height:22px;">
+                                    <span>关注</span>
+                                    {{else}}
+                                    <img src="img/icons8-heart-filled-50.png" style="height:22px;">
+                                    <span>已关注</span>
+                                    {{/if}}
+                                    
+                                </li>
+    
+                            </ul>
+                            
+                        </div>
+                    
+
+
+                </div>
+            </div>
+            {{/if}}
+            {{/each}}
+
+            <div id="followPageList">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="slidebox" class="slideBox mui-grid-view" style="bottom: 3rem!important;margin-left: -200%">
+        <div class="weui-loadmore" >
+            <i class="weui-loading" ></i>
+            <span class="weui-loadmore__tips" >正在加载</span>
+        </div>
+    </div>
+
+    <div id="slideboxzu" class="slideBox mui-grid-view" style="bottom: 3rem!important;margin-left: -200%">
+        <div class="weui-loadmore" >
+            <span class="weui-loadmore__tips">暂无数据</span>
+        </div>
+    </div>
+
+
+</template>
+<script>
+ $f("df", ___, function(_page,_data) {
+//     $f("plugin.startTest",'__');
+if(typeof(_data)!="object"){
+  var _data=eval("("+_data+")");
+}
+    $("title").html("我的关注");
+     $f("ajax.get",$f("server","users/followingList"), {page:_data.page,pageSize:_data.pageSize,uid:1}, "___.newsList",_page,_data)();
+ });
+ $f("df","___.newsList",function(_data,_page,pare) {
+
+     var data = {data: _data};
+     var html = template.render(_page, data)
+     console.log(data);
+     $("#container").html(html);
+     //分页
+
+     var num=2;
+     var max=_data[1][0].totalCount;
+     $("#container").scroll(function(){
+         var $this =$(this),
+         viewH =$(this).height(),//可见高度
+         contentH =$(this).get(0).scrollHeight,//内容高度
+         scrollTop =$(this).scrollTop();//滚动高度
+         //到达底部20px时,加载新内容
+         if(contentH - viewH - scrollTop <= 20 && (num*10)<=(max+9)) {
+             $('#slidebox').animate({'marginLeft': '0px'}, 10);
+             $('#slideboxzu').stop(true).animate({'marginLeft': '-200%'}, 10);
+             $f('plugin', 'faxian.news.newsList.newsPageList', {page:num,pageSize:10,modleName:pare.modleName})
+
+           /*  setTimeout(function () {
+                 $('#slidebox').animate({'marginLeft': '-200%'}, 10);
+             }, 1500);*/
+             num++;
+         }else{
+             $('#slidebox').stop(true).animate({'marginLeft': '-200%'}, 10);
+             $('#slideboxzu').animate({'marginLeft': '0px'}, 10);
+         }
+
+
+     });
+
+ });
+
+
+
+
+</script>

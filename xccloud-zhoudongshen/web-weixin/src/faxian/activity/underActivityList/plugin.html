@@ -1,0 +1,57 @@
+<template>
+    <style>
+        .hdzx {
+            width: 100%;
+            height: 150px;
+            background-size: 100% auto;
+            background-repeat-y: no-repeat;
+            padding-top: 70px;
+            margin-top: 10px;
+
+        }
+        .hdzx > span{
+            font-size: 24px;
+            color: #fff;
+            display: block;
+            margin: 107px 0px 0px 10px;
+        }
+    </style>
+    <div>
+
+
+        <div style="background-image: url('img/xuanchuan.jpg')" class="hdzx" onclick="$f('plugin', 'faxian.activity.underActivityDetail', 0)">
+                    <span >
+                        版画技师交流会
+                    </span>
+        </div>
+
+        <div style="background-image: url('img/index-1.png')" class="hdzx">
+                    <span >
+                        版画技师交流会
+                    </span>
+        </div>
+
+    </div>
+
+
+
+
+</template>
+<script>
+ $f("df", ___, function(_page,_data) {
+    window.history.pushState(null,null,"#f->plugin home 0");
+    window.history.pushState(null,null,"#f->plugin faxian.activity.underActivityList 0");
+     var data = {data: _data};
+     var html = template.render(_page, data)
+     if($("#news").length == 0) {
+        $f('plugin','faxian',0);
+        }    
+     $("#news").html(html);
+     $('#uact').addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+ });
+
+
+
+
+
+</script>

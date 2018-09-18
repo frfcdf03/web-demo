@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>周东申艺术馆</title>
+    <!-- 引入 WeUI -->
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.css" />
+    
+    <link rel="stylesheet" href="weui/example.css" />
+    <!-- 轮播 -->
+    <link rel="stylesheet" href="css/swiper-4.2.6.min.css" />
+    <style>
+        a{
+            color: black;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+        <div class="container" id="container" style="height: calc(100% - 50px);    overflow-x: hidden; ">
+
+        </div>
+
+
+
+
+
+
+    <div class="page">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-tab__panel">
+
+                </div>
+                <div class="weui-tabbar">
+                    <a href="#f->plugin home 0" class="weui-tabbar__item weui-bar__item_on" data="home" id="home">
+                        <img src="img/index1.png" alt="" class="weui-tabbar__icon">
+                        <p class="weui-tabbar__label">首页</p>
+                    </a>
+                    <a href="javascript:;" class="weui-tabbar__item" data="paintings.paintingsList" id="paintings.paintingsList" >
+                        <img src="img/zuopin.png" alt="" class="weui-tabbar__icon">
+                        <p class="weui-tabbar__label">作品</p>
+                    </a>
+                    <a href="javascript:;" class="weui-tabbar__item" data="faxian" id="faxian">
+                        <img src="img/faxian.png" alt="" class="weui-tabbar__icon">
+                        <p class="weui-tabbar__label">发现</p>
+                    </a>
+                    <a href="#f->plugin my 0" class="weui-tabbar__item" data="my" id="my">
+                        <img src="img/me.png" alt="" class="weui-tabbar__icon">
+                        <p class="weui-tabbar__label">我的</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 使用 -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/js-yaml.min.js"></script>
+    <script src="js/hrframe.js"></script>
+    <script src="js/template-web.js"></script>
+    <script src="js/my-app.js"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+    <!-- 轮播 -->
+    <script src="js/swiper-4.2.6.min.js"></script>
+    <!-- echarts -->
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+
+
+
+    <script type="text/javascript">
+        $f({"plugin_path":{
+            "simple":"___",
+            "plugin":[/___\./g,/___,/g,/___/g]
+        }});
+        $(function(){
+            $('.weui-tabbar__item').on('click', function () {
+                $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+                var data=$(this).attr("data");
+                $f("plugin", data, 0);
+            });
+        });
+   
+        $f("plugin", "home", 0);
+      
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<template>
+    <div id="newPaintingsType" class="modal fade" tabindex="-1" role="dialog">
+        <!-- modal-dialog -->
+        <div class="modal-dialog" role="document">
+            <!-- modal-content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">画作类型新增</h4>
+                </div>
+                <div class="modal-body">
+                    <form style="padding-top: 30px" id="paintingsTypeForm">
+                        <div class="form-group">
+                            <input type="hidden" class="iftitle"/>
+                            <label for="paintingsType_Name"> 标题</label>
+                            <input type="text" class="form-control" name="paintingsType_Name" id="paintingsType_Name"
+                                   onblur="$f('__.titlevalidation')" placeholder="请输入画作类型标题">
+                        </div>
+                        <div class="form-group">
+                            <label for="paintingsType_Pid">类型</label>
+                            <select class="form-control" name="paintingsType_Pid" id="paintingsType_Pid">
+                                <option value=6>&nbsp; 套装 &nbsp;</option>
+                                <option value=7>&nbsp; 系列 &nbsp;</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paintingsType_price">价格</label>
+                            <input type="text" class="form-control" name="price" id="paintingsType_price"
+                                   placeholder="请输入价格">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paintingsType_Content">简介</label>
+                            <textarea class="form-control" name="paintingsType_Content" id="paintingsType_Content"
+                                      rows="3" style="outline:none;resize:none;"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary savePaintingsType">保存类型</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</template>
+<script>
+    $f("df", __, function (_page) {
+
+        var html = template.render(_page);
+        $("#modelDiv").html(html);
+
+        $("#newPaintingsType").modal("show");
+
+        $(".savePaintingsType").click(function () {
+
+            var paintingsType_Name = $("#paintingsType_Name").val();
+            var iftitle =  $(".iftitle").val();
+            if(paintingsType_Name==''){
+                alert(" 标题不能为空 ")
+                return ;
+            }else if(iftitle=="存在重复标题"){
+                alert("存在重复套装或系列名称，请重写标题！")
+                return ;
+            }
+            var paintingsType_Pid = $("#paintingsType_Pid").val();
+            var price = $("#paintingsType_price").val();
+
+            var paintingsType_Content = $("#paintingsType_Content").val();
+
+            var data = {
+                paintingsType_Name:paintingsType_Name,
+                paintingsType_Pid:paintingsType_Pid,
+                price:price,
+                paintingsType_Content:paintingsType_Content
+            };
+            $f("ajax.post", $f("server", "paintings/addPaintingsType"), data, "__.newPaintingsType")();
+
+        });
+
+
+    });
+
+    //保存成功
+    $f("df", "__.newPaintingsType", function (_data) {
+        if (_data.affectedRows == 1 && _data.insertId != 0) {
+            alert("保存成功");
+            $("#newPaintingsType").modal("hide");
+            $f("plugin", "paintings.typePage", 0);
+
+        } else {
+            alert("保存失败");
+        }
+    });
+
+    //验证画作标题是否重复
+    $f("df","__.titlevalidation",function(){
+        var paintingsType_Name = $("#paintingsType_Name").val();
+        //alert(paintingsType_Name)
+        $f("ajax.get", $f("server", "paintings/titlevalidation"),{paintingsType_Name:paintingsType_Name}, "__.returnvalidation")();
+    })
+    $f("df","__.returnvalidation",function(_data){
+        
+        if(_data[0].count!=0){
+            $(".iftitle").val("存在重复标题");
+        }else{
+            $(".iftitle").val("不存在重复标题");
+        }
+    })
+</script>

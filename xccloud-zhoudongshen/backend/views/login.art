@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>周东申艺术馆--登陆</title>
+    <!--首页样式-->
+    <link rel="stylesheet"  href="../../web-pc/bootstrap/css/bootstrap.min.css">
+    <link href="../../web-pc/index/css/style.css" rel="stylesheet">
+    <link href="../../web-pc/index/css/style-responsive.css"  rel="stylesheet">
+
+
+    <style>
+        body{
+            text-align: center;
+            background-color: #54585B;
+        }
+        #body{
+            margin-top: 100px;
+        }
+        #message{
+            color: #c12e2a;
+            margin-top: 100px;
+        }
+        .kuangkuang{
+            margin-top: 30px;
+            background: #f7f7f7;
+            width: 400px;
+            height: 300px;
+            margin: 0 auto;
+            position: relative;
+            top: 25px;
+        }
+        .buttondl{
+            width: 230px;
+            height: 30px;
+            background-color:#3b78c5;
+            border: none;
+            color: #FFF;
+            border-radius: 4px;
+
+        }
+        .wkk{
+            background: #313335;
+            height: 350px;
+        }
+
+    .login-name{
+        color: #fff;
+        font-size: 30px;
+
+    }
+    </style>
+</head>
+<body >
+
+<div id="body">
+    <div ><span class="login-name">周东申艺术馆登录页面</span></div>
+    <div class="wkk">
+    <div style="margin-top: 30px;" class="kuangkuang">
+        <div style="padding-top: 75px;height: 140px;">
+            <div><span style="font-size: 16px;">用户名：</span><input type="text" id="login-name" name="name" style="height: 25px;font-size: medium;"/></div>
+            <div style="margin-top: 30px"><span style="font-size: 16px;">密码&nbsp&nbsp&nbsp：</span><input type="password" id="login-password" name="password" style="height: 25px;font-size: medium;"/></div>
+            <div style="margin-top: 30px"><button class="buttondl" id="confirm" onclick="$f('checkUser',{username:$('#login-name').val(),password:$('#login-password').val()})">登录</button></div>
+        </div>
+    </div>
+    </div>
+</div>
+
+   <!-- <div id="loginForm" style="background-color:white">
+            <div class="form-group" style="margin:0;padding:0 ">
+                            <div class="modal-header" style="background-color: #313335">
+                                <h4 class="modal-title" id="exampleModalLabel" style="text-align: center" >周东申艺术馆&#45;&#45;登陆</h4>
+                            </div>
+                            <div class="modal-body" style="background-color:white">
+                                <form >
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="control-label">用户名：</label>
+                                        <input type="text" class="form-control" id="login-name" name="name">
+            
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="control-label">密码:</label>
+                                        <input type="password" class="form-control" id="login-password" name="password">
+                                    </div>
+            
+                                </form>
+                            </div>
+                            <div class="modal-footer"style="background-color:white">
+                                <button type="button" class="btn btn-info" data-dismiss="modal">关闭</button>
+                                <button style="background-color:#D55E2D; border: 1px solid #D55E2D" type="button" class="btn btn-primary" id="confirm" onclick="$f('checkUser',{username:$('#login-name').val(),password:$('#login-password').val()})">提交</button>
+                            </div>
+                        </div>
+    </div>-->
+    <script type="text/javascript" src="../../web-pc/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../../web-pc/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../web-pc/js/js-yaml.min.js"></script>
+    <script type="text/javascript" src="../../web-pc/js/hrframe.js"></script>
+    <script type="text/javascript" src="../../web-pc/js/template-web.js"></script>
+    <script src="../../web-pc/bootstrap/js/extendPagination.js"></script>
+    <script src="../../web-pc/js/common-tool.js"></script>
+    <script src="../../web-pc/ckeditor5/ckeditor.js"></script>
+    <script>
+            $f("df", "checkUser",function(_data){
+                console.log("test checkUser");
+                console.log(_data);
+                $f("ajax.post","backend/checkUser", _data, "__.helper",0)();
+            });
+            $f("df","__.helper",function(_data,val){
+                console.log(_data);
+                 if(_data.data=="success")
+                 {
+                    //alert("登陆成功");
+                    window.location.replace("/web-pc");
+            //console.log(_data[0].user_name);
+            //console.log($("#login").attr("data"));
+                }
+             else{
+                 alert("登陆失败，用户名/密码错误");
+                }
+            });
+    </script>
+</body>
+
+</html>

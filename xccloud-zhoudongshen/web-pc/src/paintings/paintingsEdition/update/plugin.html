@@ -1,0 +1,167 @@
+<template>
+
+
+    <div class="modal fade bs-example-modal-sm" id="updateEdition">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel" >版本备注</h4>
+                </div>
+                <div class="modal-body">
+                    <form  id="editionForm">
+                        <div class="modal-body">
+
+                            <div class="form-group">
+                                <label for="priceUpdate" class="col-sm-3 col-form-label">版本号：</label>
+                                <div class="input-group" style="width: 75%">
+                                    <input type="text" readonly="readonly"  class="form-control" name="paintings_editionNum" id="editionNum"
+                                       value="{{data[0].paintings_editionNum}}"     placeholder="请输入版本号">
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="priceUpdate" class="col-sm-3 col-form-label">状态：</label>
+                                <div class="input-group"  style="width: 75%">
+                                  
+                                    <select name="status" id="status" style="width:100%;height:34px">
+
+                                        <option value="0" 
+                                        {{if data[0].status==0}}
+                                            selected
+                                        {{/if}}
+                                        >未售出</option>
+                                        <option value="1"
+                                        {{if data[0].status==1}}
+                                            selected
+                                        {{/if}}
+                                        >已售出</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label  class="col-sm-3 col-form-label">售出时间：</label>
+                                <div class='input-group date' id='datetimepicker2' >
+                                    <input type="text" class="form-control" name="selltime" id="selltime"
+                                           value="{{data[0].selltime}}">
+                                   
+                                    <span class="input-group-addon"  >
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="priceUpdate" class="col-sm-3 col-form-label">购买人：</label>
+                                <div class="input-group" style="width: 75%">
+                                    <input type="text" class="form-control" name="buyer" id="buyer"
+                                   value=" {{data[0].buyer}}"    placeholder="请输入购买人">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="priceUpdate" class="col-sm-3 col-form-label">购买人电话：</label>
+                                <div class="input-group" style="width: 75%" >
+                                    <input type="text" class="form-control" name="buyer_phone" id="buyer_phone"
+                                       value="{{data[0].buyer_phone}}"     placeholder="请输入购买人电话">
+
+                                </div>
+                            </div>
+
+                           
+                               
+                        </div>
+
+                       
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="$f('__.save',{{data[0].paintings_id}},{{currPage}})">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var currPage=_data.currPage;
+        var editionNum=_data.editionNum;
+        var paintingsId=_data.paintings_id
+        $f("ajax.get", $f("server", "editions/selectByeditionNum"), {editionNum:editionNum,paintings_id:paintingsId}, "__.show", _page, currPage)();
+    });
+    $f("df", "__.show", function (_data, _page,_curr) {
+
+        var data = {data: _data,currPage:_curr};
+        var html = template.render(_page, data)
+        console.log(data);
+        $("#modelDiv").html(html);
+        $("#updateEdition").modal("show");
+
+        //设置日期时间控件
+
+        $('#datetimepicker2').datetimepicker({
+            language: 'zh-CN',//显示中文
+            format: 'yyyy-mm-dd',//显示格式
+            minView: "month",//设置只显示到月份
+            endDate:new Date(),
+            initialDate: new Date(),
+            autoclose: true,//选中自动关闭
+            todayBtn: true,//显示今日按钮
+            locale: moment.locale('zh-cn')
+        });
+        //默认获取当前日期
+        // var today = new Date();
+        // var dateUpdate = (today.getFullYear()) + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+        // //对日期格式进行处理
+        // var date = new Date(dateUpdate);
+        // var mon = date.getMonth() + 1;
+        // var day = date.getDate();
+        // var mydate = date.getFullYear() + "-" + (mon < 10 ? "0" + mon : mon) + "-" + (day < 10 ? "0" + day : day);
+        // if(_data[0].selltime=null){
+        //     $("#selltime").val(dateUpdate);
+        // }
+       
+
+    });
+
+
+
+
+    $f("df", "__.save", function (paintings_id,currPage) {
+       
+         var editionNum=$("#editionNum").val();
+         var status = $("#status").val();
+         var selltime = $("#selltime").val();
+         var buyer = $("#buyer").val();
+         var buyer_phone = $("#buyer_phone").val();
+        $("#updateEdition").modal("hide");
+        $f("ajax.post", $f("server", "editions/updateEdition"), {
+            paintings_id:paintings_id,
+            editionNum: editionNum,
+            status: status,
+            selltime: selltime,
+            buyer: buyer,
+            buyer_phone: buyer_phone,
+
+        }, "__.update", paintings_id,currPage)();
+
+
+    })
+    $f("df", "__.update", function (_data,_paintingsId,_curr) {
+
+        if (_data.affectedRows == 1) {
+            alert("修改成功");
+            $f('plugin', 'paintings.paintingsEdition.list', {paintings_id:_paintingsId,page:_curr,pageSize:10})
+        } else {
+            alert("修改失败");
+        }
+    })
+</script>

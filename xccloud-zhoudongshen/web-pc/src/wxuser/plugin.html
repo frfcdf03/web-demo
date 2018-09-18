@@ -1,0 +1,43 @@
+<template>
+
+
+    <div id="WxUserContent" style="padding: 10px 15px">
+        <div class="form-inline" style="float:right;margin:10px 0px">
+            <div class="form-group">
+                <input type="text" class="form-control" id="nickname" placeholder="请输入昵称">
+            </div>
+            <button type="submit" id="search" class="btn btn-default">查询</button>
+        </div>
+
+        <div id="listContent">
+
+        </div>
+
+       
+        <div id="callBackPager" style="text-align: center">
+
+        </div>
+    </div>
+</template>
+<script>
+ $f("df", __, function(_page,_data) {
+
+
+     var html=template.render(_page,_data);
+     $("#content").html(html);
+     //加载列表
+     $f("plugin", "wxuser.list", {page:1,pageSize:10});
+
+      //查询
+      $("#search").click(function(){
+         var nickname=$("#nickname").val();
+         $f("plugin", "wxuser.list", {nickname:nickname,page:1,pageSize:10});
+
+     })
+
+
+ });
+
+
+
+</script>

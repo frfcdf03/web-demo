@@ -1,0 +1,64 @@
+<template>
+    <div class="page">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-navbar">
+                    <div class="weui-navbar__item" id="uact" onclick="window.location.href='#f->plugin faxian.activity.underActivityList 0'">  
+                        线下活动
+                    </div>
+                
+                    <div class="weui-navbar__item" id="oact" onclick="window.location.href='#f->plugin faxian.activity.onActivity.newsList {page:1,pageSize:10,modleName:\'onActivity\'}'">  
+                        线上活动         
+                    </div>
+                
+                    <div class="weui-navbar__item" id="nlist"  onclick="window.location.href='#f->plugin faxian.news.newsList {page:1,pageSize:10,modleName:\'news\'}'">             
+                        新闻资讯           
+                    </div>
+                </div>
+                <div class="weui-tab__panel">
+                    <div id="news">
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</template>
+<script>
+ $f("df", ___, function(_page,_data) {
+    $("title").html("周东申艺术馆");
+    $("#faxian").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+     var data = {data: _data};
+     var html = template.render(_page, data)
+     $("#container").html(html);
+     $('.weui-navbar__item').on('click', function () {
+         $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+     });
+    if(_data==1){
+        $('#oact').addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+     $f('plugin', 'faxian.activity.onActivity.newsList',  {page:1,pageSize:10,modleName:'onActivity'});
+    }
+    else if(_data==2){
+        $('#nlist').addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $f('plugin', 'faxian.news.newsList',{page:1,pageSize:10,modleName:'news'});
+    }
+    else{
+        window.location.href="#f->plugin faxian.activity.underActivityList 0";
+        $('#uact').addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $f('plugin', 'faxian.activity.underActivityList',0);
+
+    }
+
+
+ });
+
+
+
+
+
+</script>

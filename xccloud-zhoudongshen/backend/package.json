@@ -1,0 +1,36 @@
+{
+  "name": "zds-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "art-template": "^4.12.2",
+    "connect-redis": "^3.3.3",
+    "cookie-parser": "~1.4.3",
+    "crypto": "^1.0.1",
+    "debug": "~2.6.9",
+    "ejs": "^2.6.1",
+    "express": "~4.16.0",
+    "express-art-template": "^1.0.1",
+    "express-session": "^1.15.6",
+    "http-errors": "^1.6.3",
+    "markdown-it": "^8.4.1",
+    "mongodb": "^3.0.7",
+    "morgan": "~1.9.0",
+    "multer": "^1.3.0",
+    "mysql": "^2.15.0",
+    "redis": "^2.8.0",
+    "request": "^2.87.0"
+  },
+  "apidoc": {
+    "name": "zds-backend",
+    "version": "0.1.0",
+    "description": "apiDoc basic example",
+    "apidoc": {
+      "title": "scrum-story",
+      "url": "https://api.github.com/v1"
+    }
+  }
+}

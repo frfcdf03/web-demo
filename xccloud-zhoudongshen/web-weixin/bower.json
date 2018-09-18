@@ -1,0 +1,21 @@
+{
+  "name": "scrum-story",
+  "description": "",
+  "main": "",
+  "authors": [
+    "张晨 <kingdemoncc@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "markdown-it": "^8.4.1"
+  }
+}

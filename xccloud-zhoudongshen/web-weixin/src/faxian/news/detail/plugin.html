@@ -1,0 +1,64 @@
+<template>
+    <div style="margin: 10px">
+        <h2 style="text-align: center">{{data[0][0].title}}</h2>
+
+        <div style="text-align: right;padding: 10px;">
+            <span>{{data[0][0].creat_time.substring(0,10)}}</span>
+            {{each data[1] as value i}}
+            {{if value.id==data[0][0].type_id}}
+            <span style="color: #6a78dc;">{{value.type_name}}</span>
+            {{/if}}
+            {{/each}}
+        </div>
+        <span>{{#data[0][0].content}}</span>
+
+        <div id="liuyan_content">
+
+        </div>
+
+    </div>
+
+
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+//     $f("plugin.startTest",'__');
+        //window.history.forward(1);
+        $f("ajax.get", $f("server", "news/selectById"), {id: _data}, "___.detail", _page,_data)();
+    });
+    $f("df", "___.detail", function (_data, _page,_id) {
+
+        var data = {data: _data};
+        $f("plugin","message",{type:1,id:_id});
+        var html = template.render(_page, data)
+        console.log(data);
+        $("#container").html(html);  
+        console.log(document.images[1].src);
+        wx.onMenuShareAppMessage({
+            title: data.data[0][0].title, // 分享标题
+            desc: $("div p").html(), // 分享描述
+            link: $f("get", "domain") + "/wx-redirect?plugin=faxian.news.detail&param=" + _id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl:document.images[1].src, // 分享图标
+            trigger: function (res) {
+                // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+            },
+            success: function (res) {},
+            cancel: function (res) {},
+            fail: function (res) {}
+        });
+        wx.onMenuShareTimeline({
+            title: data.data[0][0].title, // 分享标题
+            link: $f("get", "domain") + "/wx-redirect?plugin=faxian.news.detail&param=" + _id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl:document.images[1].src,  // 分享图标
+            trigger: function (res) {
+                // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+            },
+            success: function (res) {},
+            cancel: function (res) {},
+            fail: function (res) {}
+        });
+
+    });
+
+
+</script>

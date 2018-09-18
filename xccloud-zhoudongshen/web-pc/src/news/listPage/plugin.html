@@ -1,0 +1,108 @@
+<template>
+
+
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col" width="10%">类型</th>
+                <th scope="col" width="8%">创建人</th>
+                <th scope="col" width="20%">标题</th>
+                <th scope="col" width="32%">内容</th>
+                <th scope="col" width="15%">创建时间</th>
+                <th scope="col" width="15%">操作</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {{each data[0] as value i}}
+            <tr>
+                <td style="vertical-align:middle">{{value.type_name}}</td>
+                <td style="vertical-align:middle">{{value.NAME}}</td>
+                <td style="vertical-align:middle">
+                    {{value.title}}
+                </td>
+
+                <td style="vertical-align:middle">
+                    {{if value.content.length>100}}
+                    <p>
+                    {{#value.content.substring(0,100)}}...
+                    </p>
+                    {{/if}}
+                    {{if value.content.length<=100}}
+                    <p>
+                        {{#value.content}}
+                    </p>
+                    {{/if}}
+                </td>
+
+                <td style="vertical-align:middle"> {{value.creat_time}}</td>
+                <td style="vertical-align:middle">
+                    <a class="btn btn-warning btn-sm newsDelete" id="newsDelete" data="{{value.id}}">删除</a>
+                    <a class="btn btn-info btn-sm updataNews" id="updataNews" data="{{value.id}}">修改</a>
+                </td>
+
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+
+
+
+</template>
+<script>
+ $f("df", __, function(_page,_data) {
+//     $f("plugin.startTest",'__');
+     $f("ajax.get",$f("server","news/getNewsList"), {page:_data.page,pageSize:_data.pageSize,modleName:_data.modleName,keywords:_data.keywords}, "__.yml",_page,_data)();
+ });
+
+ $f("df","__.yml",function(_data,_page,pare){
+     var data={data:_data};
+     var html=template.render(_page, data);
+     console.log(data);
+     $("#listContent").html(html);
+     //删除
+     $(".newsDelete").click(function(){
+         var id=$(this).attr("data");
+         if(confirm("确认删除吗")){
+
+             $f("ajax.get",$f("server","news/deleteById"), {id:id,type:1}, "__.deleteById",_page,{currPage:_data[2].currPage,modleName:pare.modleName})();
+         }
+
+     });
+     //修改
+     $(".updataNews").click(function(){
+         var id=$(this).attr("data");
+         var currPage=_data[2].currPage;
+           $f("plugin", "news.updateNews", {id:id,currPage:currPage,modleName:pare.modleName});
+
+     });
+
+     //分页
+     $('#callBackPager').extendPagination({
+         totalCount: _data[1][0].totalCount,
+         limit: 10,
+         defaultPage:_data[2].currPage,
+         callback: function (curr, limit, totalCount) {
+             $f("plugin", "news.listPage", {page:curr,pageSize:limit,modleName:pare.modleName});
+         }
+
+     });
+
+
+
+ });
+
+ $f("df","__.deleteById",function(_data,_page,pare){
+     console.log(_data.affectedRows);
+     if(_data.affectedRows>=1){
+         alert("删除成功");
+        // $f("plugin", "news", 0);
+         $f("plugin", "news.listPage", {page:pare.currPage,pageSize:10,modleName:pare.modleName});
+     }else{
+         alert("删除失败");
+     }
+
+ })
+
+</script>

@@ -1,0 +1,71 @@
+<template>
+
+
+        <br>
+        <button type="button" class="btn btn-primary" id="addPaintings" >
+            添加
+        </button>
+
+        <form class="form-inline" style="float: right;margin-bottom: 5px;width: 390px">
+            <div class="form-group">
+                <input type="text" class="form-control" id="paintingsId" placeholder="画作编号">
+            </div>
+            <select class="form-control" id="paintings_sort">
+                <option value=0>&nbsp; 关注度由高到低 &nbsp;</option>
+                <option value=1>&nbsp; 关注度由低到高 &nbsp;</option>
+            </select>
+
+            <button type="button" class="btn btn-default queryPaintings">查询</button>
+
+        </form>
+
+        <div id="listContent">
+
+        </div>
+
+        <div id="callBackPager" style="text-align: center">
+
+        </div>
+
+
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        var ptid=_data;
+
+        var html = template.render(_page,_data)
+
+        $("#pContent").html(html);
+
+
+        $f("plugin", "paintings.paintingsPage.listPage", {page: 1, pageSize:8,paintings_type:ptid});
+
+        //查询画作按钮
+        $(".queryPaintings").click(function () {
+            var paintings_id = $("#paintingsId").val();//画作编号
+            var paintings_sort=$("#paintings_sort").val();//关注度排序 0：由高到低 1：由低到高
+            //画作列表页
+            $f("plugin", "paintings.paintingsPage.listPage", {
+                page: 1, pageSize:8,paintings_id:paintings_id,paintings_sort:paintings_sort,paintings_type:ptid
+            });
+
+
+        })
+
+        //新增画作按钮
+        $("#addPaintings").click(function () {
+            // $("#newPaintings").modal();
+            // $("#newPaintings").show();
+            $f("plugin", "paintings.paintingsPage.add", 0);
+
+        });
+
+
+
+    });
+
+
+</script>

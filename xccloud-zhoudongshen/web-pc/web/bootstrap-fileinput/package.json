@@ -1,0 +1,65 @@
+{
+  "_from": "bootstrap-fileinput@^4.4.8",
+  "_id": "bootstrap-fileinput@4.4.8",
+  "_inBundle": false,
+  "_integrity": "sha1-AODCwCzXfi2uM0mI/DLO/ourfOA=",
+  "_location": "/bootstrap-fileinput",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "bootstrap-fileinput@^4.4.8",
+    "name": "bootstrap-fileinput",
+    "escapedName": "bootstrap-fileinput",
+    "rawSpec": "^4.4.8",
+    "saveSpec": null,
+    "fetchSpec": "^4.4.8"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bootstrap-fileinput/-/bootstrap-fileinput-4.4.8.tgz",
+  "_shasum": "00e0c2c02cd77e2dae334988fc32cefe8bab7ce0",
+  "_spec": "bootstrap-fileinput@^4.4.8",
+  "_where": "C:\\Users\\frfcd\\Desktop\\work\\xccloud-zhoudongshen\\web-pc",
+  "authors": [
+    "Kartik Visweswaran <kartikv2@gmail.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/kartik-v/bootstrap-fileinput/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "bootstrap": ">= 3.0.0",
+    "jquery": ">= 1.9.0"
+  },
+  "deprecated": false,
+  "description": "An enhanced HTML 5 file input for Bootstrap 3.x with file preview, multiple selection, ajax uploads, and more features.",
+  "homepage": "https://github.com/kartik-v/bootstrap-fileinput",
+  "keywords": [
+    "file",
+    "input",
+    "preview",
+    "image",
+    "upload",
+    "ajax",
+    "multiple",
+    "delete",
+    "progress",
+    "gallery"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "./js/fileinput.js",
+  "name": "bootstrap-fileinput",
+  "peerDependencies": {
+    "jquery": ">= 1.9.0",
+    "bootstrap": ">= 3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kartik-v/bootstrap-fileinput.git"
+  },
+  "style": "./css/fileinput.css",
+  "version": "4.4.8"
+}

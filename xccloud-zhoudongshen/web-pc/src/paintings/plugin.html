@@ -1,0 +1,50 @@
+<template>
+
+    <style>
+
+        #pContent {
+            width: 85%;
+            float: left;
+            padding: 10px;
+            display: inline;
+            margin-left: 160px;
+        }
+        .ptype{
+            padding: 3px;
+            color: #fff;
+            border-radius: 4px;
+            margin: 2px;
+            background: #969a9d;
+        }
+        .ptypeok{
+            background: #337ab7;
+        }
+
+    </style>
+    <!-- 画作类型列表div -->
+    <!--<div id="asideList">-->
+    <div id="typePageDiv" style="width:160px;height:100%;margin-left:0px;position:fixed;background-color:#34281f"></div>
+    <!--</div>-->
+    <!-- 画作列表div -->
+    <div id="pContent" style="">
+
+    </div>
+    <!-- 模态窗口div -->
+    <div id="modelDiv">
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var html=template.render(_page,_data);
+        // $("#typePageDiv").css({"width":"160px","height":"100%","margin-left":"210px","position":"fixed","background-color":"#34281f"})
+        $("#typePageDiv").show();
+        // $(".wrapper").css({"padding-left":"0px","padding-right":"0px"})
+        $("#content").html(html);
+
+        $f("plugin", "paintings.typePage", 0);
+        $f("plugin", "paintings.paintingsPage", 0);
+
+    });
+
+</script>

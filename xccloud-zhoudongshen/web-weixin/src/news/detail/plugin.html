@@ -1,0 +1,42 @@
+<template>
+
+    <h2 style="text-align: center">{{data[0][0].title}}</h2>
+
+    <div style="text-align: right;padding: 10px;">
+    <span>{{data[0][0].creat_time.substring(0,10)}}</span>
+    {{each data[1] as value i}}
+    {{if value.id==data[0][0].type_id}}
+    <span style="color: #6a78dc;">{{value.type_name}}</span>
+    {{/if}}
+    {{/each}}
+    </div>
+    <span>{{#data[0][0].content}}</span>
+
+    <div id="liuyan_content">
+
+    </div>
+
+
+
+</template>
+<script>
+ $f("df", ___, function(_page,_data) {
+//     $f("plugin.startTest",'__');
+     $f("ajax.get",$f("server","news/selectById"), {id:_data.id}, "__.detail",_page)();
+ });
+ $f("df","___.detail",function(_data,_page) {
+
+     var data = {data: _data};
+     $f("plugin","message",{type:1,id:data.data.id});
+     var html = template.render(_page, data)
+     console.log(data);
+     $("#container").html(html);
+
+
+
+ });
+
+
+
+
+</script>

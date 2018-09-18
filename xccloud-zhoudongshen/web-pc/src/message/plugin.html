@@ -1,0 +1,40 @@
+<template>
+    <div style="padding: 0px 15px">
+    <button style="margin:10px 0px" type="button" id="deleteAll" class="btn btn-default">批量删除</button>
+
+    <div class="form-inline" style="float:right;margin:10px 0px">
+        <div class="form-group">
+            <input type="text" class="form-control" id="keyword" placeholder="请输入关键字">
+        </div>
+        <button type="submit" id="search" class="btn btn-default">查询</button>
+    </div>
+
+    <div id="listContent">
+
+
+    </div>
+
+
+    <div id="callBackPager" style="text-align: center"></div>
+
+    </div>
+
+</template>
+<script>
+    $f("df", __, function(_page,_data) {
+        var data={data:_data};
+        var html=template.render(_page, data)
+        console.log(data);
+        $("#content").html(html);
+        //加载列表
+        $f("plugin", "message.search", {page:1,pageSize:10});
+
+        //查询
+        $("#search").click(function(){
+            var keyword=$("#keyword").val();
+            $f("plugin", "message.search", {keyword:keyword,page:1,pageSize:10,});
+
+        })
+    })
+
+</script>

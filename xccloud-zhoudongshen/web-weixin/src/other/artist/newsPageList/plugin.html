@@ -1,0 +1,44 @@
+<template>
+
+    {{each data[0] as value i}}
+    <a href="#f->plugin faxian.news.detail {{value.id}}">
+        {{if value.img_path!='' }}
+        <div style="background-image: url('{{value.img_path}}');margin-bottom: 5vw" class="hdzx">
+            {{/if}}
+            {{if value.img_path==''}}
+            <div style="background-image: url('img/1-1.png');margin-bottom: 5vw" class="hdzx">
+                {{/if}}
+
+            <span style="padding-top: 30vw;display: block">
+            <span style="font-size: 20px;color: #fff;display: block;font-weight:bold;overflow: hidden; white-space: nowrap;text-overflow:ellipsis;">
+                {{value.title}}
+            </span>
+            <span style="font-size: 14px;color: #fff;display: block;font-weight:bold">
+                {{value.creat_time}}
+            </span>
+            </span>
+            </div>
+    </a>
+    {{/each}}
+
+
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+
+        $f("ajax.get", $f("server", "news/getList"), {
+            page: _data.page,
+            pageSize: _data.pageSize,
+            modleName: _data.modleName
+        }, "___.newsPageList", _page)();
+    });
+    $f("df", "___.newsPageList", function (_data, _page) {
+
+        var data = {data: _data};
+        var html = template.render(_page, data)
+        console.log(data);
+        $("#newsPageListArtist").append(html);
+    });
+
+
+</script>

@@ -1,0 +1,56 @@
+<template>
+
+    <table class="table table-bordered" align="center" style="width:90%;">
+        <thead>
+            <tr>
+            
+                <th scope="col" style="width:40%">时间</th>
+                <th scope="col" style="width:20%">价格</th>
+                <th scope="col" style="width:40%">操作</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {{each data as sdata i}}
+            <tr>
+                
+                <td>{{sdata.date.toString().substring(0,10)}}</td>
+                <td>{{sdata.price}}</td>
+                <td>
+                    <a class="btn btn-warning btn-sm paintingsDelete" data="{{sdata.id}}">删除</a>
+                    <a class="btn btn-info btn-sm paintingsUpdate" data="{{sdata.id}}">修改</a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        $f("__.yml",_page,_data);
+    });
+
+    $f("df", "__.yml", function (_page, _data) {
+        var data = {data: _data[0]};
+        console.log(data);
+        var html = template.render(_page, data);
+        $("#priceList").html(html);
+
+        //删除
+        $('.paintingsDelete').click(function () {
+            var id = $(this).attr("data");
+            $f("ajax.get", $f("server", "paintings/deletePaintings"), {
+                id: id
+            }, "__.deleteEnd")();
+        });
+
+        //修改
+        $(".paintingsUpdate").click(function () {
+            var id = $(this).attr("data");
+            $f("plugin", "paintings.updatePaintings", {
+                id: id
+            });
+        });
+
+    });
+</script>

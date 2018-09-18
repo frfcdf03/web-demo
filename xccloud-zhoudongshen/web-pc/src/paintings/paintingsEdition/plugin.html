@@ -1,0 +1,41 @@
+<template>
+    <div style="padding: 0px 15px">
+      
+        <div style="text-align: right;">
+            <button type="button" class="btn btn-primary" id="addEdition" style="margin:10px 15px">
+                添加
+            </button>
+        </div>
+        <div id="editionContent">
+
+        </div>
+
+        <div id="modelDiv">
+
+        </div>
+        <div id="callBackPager" style="text-align: center">
+
+        </div>
+
+    </div>
+</template>
+<script>
+  $f("df", __, function(_page,_data) {
+
+
+    var html=template.render(_page,_data);
+    $("#content").html(html);
+
+    // 跳转添加版本页
+    $("#addEdition").click(function(){
+        $f("plugin", "paintings.paintingsEdition.add",{paintings_id:_data.paintingsId});
+
+    })
+    //加载列表
+    $f("plugin", "paintings.paintingsEdition.list", {paintings_id:_data.paintingsId,page:1,pageSize:10});
+
+
+  });
+    
+</script>
+

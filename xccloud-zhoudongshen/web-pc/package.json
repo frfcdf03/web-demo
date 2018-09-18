@@ -1,0 +1,19 @@
+{
+  "name": "teachermanager",
+  "version": "1.0.0",
+  "description": "···\r gulpfile.js //gulp配置文件\r package.js  //nodejs配置文件\r README.md   //插件说明\r README.yaml //插件接口文件\r src/        //插件源码位置\r web/        //插件运行使用的其他文件\r ···",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bootstrap-fileinput": "^4.4.8",
+    "error": "^7.0.2",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.5.0",
+    "http-proxy-middleware": "^0.17.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

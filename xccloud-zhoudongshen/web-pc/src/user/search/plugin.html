@@ -1,0 +1,85 @@
+<!-- 列表页 -->
+<template>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th scope="col" >姓名</th>
+        <th scope="col" >手机号</th>
+        <!--<th scope="col" >密码</th>-->
+        <th scope="col" >操作</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {{each data as value i}}
+    <tr>
+        <td scope="row"> {{value.user_name}}</td>
+        <td>{{value.user_phone}}</td>
+        <!--<td>{{value.user_pwd}}</td>-->
+
+        <td>
+            <a class="btn btn-warning btn-sm deleteUser" id="deleteUser" data="{{value.id}}">删除</a>
+            <a class="btn btn-info btn-sm updataUser" id="updataUser" data="{{value.id}}">修改</a>
+        </td>
+
+    </tr>
+    {{/each}}
+
+    </tbody>
+</table>
+    <input type="hidden" name="page" id="page" value="{{data.page}}">
+</template>
+<script>
+    $f("df", __, function(_page,_data) {
+
+        $f("ajax.get",$f("server","users/getUserList"), {page:_data.page,pageSize:_data.pageSize}, "__.yml",_page)();
+    });
+
+    $f("df","__.yml",function(_data,_page){
+
+        var data={data:_data[0]};
+        var html=template.render(_page, data);
+        $("#listContent").html(html);
+
+        // //删除
+        $(".deleteUser").click(function(){
+            var id=$(this).attr("data");
+            if(confirm("确认删除吗")) {
+                $f("ajax.get", $f("server", "users/delUserById"), {id: id,}, "__.delUserById", _page,_data[2].currPage)();
+            }
+        });
+        //修改
+        $(".updataUser").click(function(){
+            var id=$(this).attr("data");
+            var currPage=_data[2].currPage;
+            $f("plugin", "user.update", {id:id,currPage:currPage });
+            //加载列表
+            // $f("plugin", "user.search", {page:_data.page,pageSize:10});
+        });
+
+        //分页
+        $('#callBackPager').extendPagination({
+            totalCount: _data[1][0].totalCount,
+            limit: 10,
+            defaultPage:_data[2].currPage,
+            callback: function (curr, limit, totalCount) {
+                $f("plugin", "user.search", {page:curr,pageSize:limit});
+            }
+
+        });
+
+
+    });
+
+    $f("df","__.delUserById",function(_data,_page,currPage){
+        console.log(_data.affectedRows);
+        if(_data.affectedRows==1){
+            alert("删除成功");
+            $f("plugin", "user.search", {page:currPage,pageSize:10});
+        }else{
+            alert("删除失败");
+        }
+
+    })
+
+</script>

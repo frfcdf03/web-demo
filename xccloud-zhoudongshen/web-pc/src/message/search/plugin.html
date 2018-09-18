@@ -1,0 +1,189 @@
+<!-- 列表页 -->
+<template>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col" width="4%"><input id="allcheck" type="checkbox" ></th>
+                <th scope="col" width="10%">模块</th>
+                <th scope="col" width="15%">标题</th>
+                <th scope="col" width="10%">留言者</th>
+                <th scope="col" width="36%">内容</th>
+                <th scope="col" width="15%">创建时间</th>
+                <th scope="col" width="10%">操作</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {{each data[0] as value i}}
+            <tr>
+                <td  style="vertical-align:middle"><input name="check" type="checkbox" value="{{value.id}}"></td>
+
+                <td style="vertical-align:middle">{{value.type_name}}</td>
+                <td style="vertical-align:middle">{{value.msg}}</td>
+                <td style="vertical-align:middle">{{value.nickname}}</td>
+                <td style="vertical-align:middle">
+                    {{if value.content.length>100}}
+                    <p>
+                        {{#value.content.substring(0,100)}}...
+                    </p>
+                    {{/if}}
+                    {{if value.content.length<=100}}
+                    <p>
+                        {{#value.content}}
+                    </p>
+                    {{/if}}
+                </td>
+
+                <td style="vertical-align:middle"> {{value.create_time}}</td>
+                <td style="vertical-align:middle">
+                    <!--<a class="btn btn-warning btn-sm messageDelete" id="messageDelete" data="{{value.id}}">删除</a>-->
+                    <a class="btn btn-default btn-sm topmessage" id="topmessage" data="{{value.id}}">置顶</a>
+
+                </td>
+
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+
+</template>
+<script>
+    $f("df", __, function(_page,_data) {
+
+        var keyword = _data.keyword;
+        var page =_data.page;
+        var pageSize = _data.pageSize;
+
+        $f("ajax.get",$f("server","message/getMessageList"), {page:page,pageSize:pageSize,keyword:keyword }, "__.message",_page)();
+
+
+    });
+
+    $f("df","__.message",function(_data,_page){
+
+        var data={data:_data};
+        var html=template.render(_page, data);
+        $("#listContent").html(html);
+
+        //置顶
+        $(".topmessage").click(function(){
+
+            //留言id
+            var id=$(this).attr("data");
+            //发送请求
+            $f("ajax.get",$f("server","message/topMessage"), { id:id,}, "__.topMessage",_page,1)();
+
+        });
+        //删除
+        $(".messageDelete").click(function(){
+
+            //留言id
+            var id=$(this).attr("data");
+
+            if(confirm("确认删除吗")){
+                //发送请求
+                $f("ajax.get",$f("server","message/deleteMessageById"), { id:id,}, "__.deleteMessage",_page,_data[2].currPage)();
+            }
+
+        });
+        //全选
+        $("#allcheck").click(function () {
+
+            var cek = $("#allcheck")[0].checked;
+            var ck = $("input[name='check']");
+            for(var i = 0; i < ck.length; i++){
+                ck[i].checked = cek;
+            }
+        })
+        var ck1 = $("input[name='check']");
+        ck1.click(function () {
+
+            var ch2 = $("input[name='check']:checked");
+
+            if(ck1.length!=ch2.length){
+                $("#allcheck")[0].checked = false;
+            }
+        })
+
+
+        //批量删除
+        $("#deleteAll").click(function () {
+            var message_ids ="";
+            var idsArr=$("input[name='check']:checked");
+            var idslength=idsArr.length;
+            if(idslength<=0){
+                alert("请先选择对象");
+                return ;
+            }
+            idsArr.each(function(i){
+                if (i === idslength - 1)
+                {
+                    message_ids = message_ids + $(this).val() ;
+                }else {
+                    message_ids = message_ids + $(this).val() +",";
+                }
+
+            });
+            if(confirm("确认删除所选记录？")){
+                //发送请求
+                $f("ajax.get",$f("server","message/deleteMessages"), {
+                    message_ids:message_ids,
+                }, "__.deleteMessages",_page,_data[2].currPage)();
+            }
+
+
+        })
+
+        //分页
+        $('#callBackPager').extendPagination({
+            totalCount: _data[1][0].totalCount,
+            limit: 10,
+            defaultPage:_data[2].currPage,
+            callback: function (curr, limit, totalCount) {
+                $f("plugin", "message.search", {page:curr,pageSize:limit});
+            }
+
+        });
+
+
+    });
+    //删除后刷新页面
+    $f("df","__.deleteMessage",function(_data,_page,currPage){
+
+        console.log(_data);
+        if(_data.affectedRows>=1){
+            alert("删除成功");
+            $f("plugin", "message.search", {page:currPage,pageSize:10 });
+        }else{
+            alert("删除失败");
+        }
+
+    });
+    //批量删除后刷新页面
+    $f("df","__.deleteMessages",function(_data,_page,currPage){
+
+        console.log(_data);
+        if(_data.affectedRows>0){
+            alert("删除成功");
+            $f("plugin", "message.search", {page:currPage,pageSize:10 });
+        }else{
+            alert("删除失败");
+        }
+
+    });
+    //置顶后刷新页面
+    $f("df","__.topMessage",function(_data,_page){
+
+        console.log(_data);
+        if(_data.affectedRows==1){
+
+            $f("plugin", "message.search",{page:1,pageSize:10});
+        }else{
+            alert("置顶失败");
+        }
+
+    })
+
+
+</script>

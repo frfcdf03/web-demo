@@ -1,0 +1,61 @@
+<template>
+	<div id="addMessageDiv" style=" width: 330px; height: 200px;position: relative;top: 90px; margin: auto;">
+
+        <textarea style=" width: 330px; height: 200px ;border-radius:5px;" name="content" id="reply_content"></textarea>
+        <a href="javascript:;" class="weui-btn weui-btn_primary" id="submitButton">留言</a>
+        <a href="javascript:;" class="weui-btn weui-btn_warn" onclick="window.history.back(-1)">返回</a>
+
+	</div>
+
+
+
+</template>
+
+<script>
+
+   $f("df", ___, function(_page,_data) {
+       window.location.href="#message";
+       var id =_data.id;
+       var type =_data.type;
+       var data={data:_data[0]};
+       var html=template.render(_page, data);
+       $("#container").html(html);
+       //添加留言
+       $("#submitButton").click(function () {
+
+           var reply_content=$("#reply_content").val();
+           //var user_id = 1;//默认用户id为1
+
+           $f("ajax.post",$f("server","message/addMessage"), {target_type:type,target_id:id,reply_content:reply_content,pid:0}, "___.addMessage",_page,id,type)();
+       })
+
+   });
+    $f("df","___.addMessage",function(_data,_page,_id,_type){
+
+
+        console.log(_data.affectedRows);
+        if(_data.affectedRows==1){
+            alert("添加成功");
+
+            if (_type==5){
+                $f("plugin", "paintings.detail",_id);
+
+            }else if( _type==6){
+                $f("plugin", "paintings.paintingsList.taozhuangList.detail",_id);
+            }else if( _type==7){
+                $f("plugin", "paintings.paintingsList.xilieList.detail",_id);
+            }else if( _type==1){
+                $f("plugin", "faxian.news.detail",_id);
+            }
+        }else{
+            alert("添加失败");
+        }
+
+
+    });
+
+
+
+
+
+</script>

@@ -1,0 +1,220 @@
+<template>
+<style>
+    iframe{
+        /* width: 0;
+        height: 0;
+        border: 0 px;  */
+        display: none;
+    }
+
+    #submitbtn{
+        padding: 0%;
+        color: black;
+    }
+
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+    }
+
+    
+</style>
+
+    <div class="modal fade bs-example-modal-lg" id="addNewsModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">添加新闻</h4>
+                </div>
+                <div class="modal-body">
+                    <form style="padding-top: 30px" id="newsForm" action="test" method="POST" enctype="multipart/form-data" target= hidden_frame >
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">类型：</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="typeAdd" id="typeAdd">
+                                        {{each data as value i}}
+                                        <option value="{{value.id}}">
+                                            {{value.type_name}}
+                                        </option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="titleAdd" class="col-sm-2 col-form-label">标题：</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="titleAdd" id="titleAdd"
+                                           placeholder="请输入标题">
+                                </div>
+                            </div>
+                            <div class="form-group row" id="uploadForm">
+                                
+                                <label for="exampleInputFile" class="col-sm-2 col-form-label">缩略图： </label>
+                                <div class="col-sm-10">
+                                
+                                <input id="exampleInputFile"  name="myImage" type="file">
+                                <small id="fileHelp" class="form-text text-muted"></small>
+                               
+                                <iframe  name="hidden_frame" id="hidden_frame" onload="$f('__.upload',this)" ></iframe>
+                                <input type="text" class="form-control-file" id="img_path" name="img_path" style="display: none">
+                            </div>
+                            </div>
+                            <div class="form-group row">
+                                <!-- The toolbar will be rendered in this container. -->
+                               
+                                <label for="editor" class="col-sm-2 col-form-label">内容：</label>
+                                <div class="col-sm-10">
+                                        <div class="document-editor">
+                                                <div class="document-editor-toolbar"></div>
+                                                <div class="document-editor-editable-container">
+                                                    <div class="document-editor-editable">
+                                                        <p></p>
+                                                    </div>
+                                                </div>
+                                        </div>
+
+                                       
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="savaNews">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        $f("ajax.get", $f("server", "news/getType"), {pid: 1}, "__.yml", _page)();
+        
+    });
+    $f("df", "__.yml", function (_data, _page) {
+        var data = {data: _data};
+        var html = template.render(_page, data);
+        console.log(data);
+        $("#modelDiv").html(html);
+        var action = $f("server", "upload/main");
+        console.log(action);
+        $('#exampleInputFile').fileinput({language: 'zh'});
+        $('.btn-file').click(function(){
+            $('#fileHelp').html("请上传图片");
+        });
+        $('#newsForm').attr('action',action);
+        $("#addNewsModal").modal("show");
+      
+    
+
+
+DecoupledEditor
+        .create( document.querySelector( '.document-editor-editable'), {
+            language:"zh-cn",
+
+        })
+        .then( editor => {
+           console.log( Array.from( editor.ui.componentFactory.names() ));
+           var toolbarContainer = document.querySelector('.document-editor-toolbar');
+
+toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+           // 这个地方加载了适配器
+           editor.config.allowedContent = true;
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader)=>{
+                return new UploadAdapter(loader);
+            };
+            $("#savaNews").click(function () {
+
+var typeAdd=$("#typeAdd").val();
+var titleAdd=$("#titleAdd").val();
+var contentAdd=editor.getData();
+var img_path =$('#img_path').val();
+if (img_path == "" || img_path == null) {
+   var confitm = confirm("未上传图片，确定提交？");  
+}
+else{
+    img_path="/"+img_path;
+    var confitm = true;
+}
+if (titleAdd == "" || titleAdd == null) {
+    alert("标题不能为空");
+    return;
+}
+if (contentAdd == "<p>&nbsp;</p>") {
+    alert("内容不能为空");
+    return;
+}
+if(confitm){
+$("#addNewsModal").modal("hide");
+ $f("ajax.post",$f("server","news/addNews"),{typeAdd:typeAdd,titleAdd:titleAdd,editor:contentAdd,img_path:img_path} , "__.addNews",_page)();
+}
+});
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+
+
+
+
+
+
+
+
+    });
+    $f("df", "__.addNews", function (_data, _page) {
+
+        console.log(_data.affectedRows);
+        if (_data.affectedRows == 1) {
+            alert("添加成功");
+
+            $f("plugin", "news", "news");
+        } else {
+            alert("添加失败");
+        }
+
+    });
+    $f("df","__.upload",function(tag){
+            var path = $(tag).contents().find('body').html();
+            if(path.length<=0)
+            $('#fileHelp').html("请上传图片");
+            else{
+                if(path=="err empty file!")
+                {
+                  alert("上传图片不能为空！");
+                }
+                else
+                {
+                    $('#fileHelp').html("上传成功");
+                    $('#img_path').val(path);
+                    console.log( $('#img_path').val());
+                }
+            }
+    });
+
+</script>

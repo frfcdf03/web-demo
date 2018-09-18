@@ -1,0 +1,143 @@
+<template>
+
+	<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="exampleModalLabel">用户添加</h4>
+				</div>
+				<div class="modal-body">
+					<form >
+
+						<div class="form-group">
+
+							<label for="user-name" class="control-label">姓名:</label>
+							<input type="text" class="form-control" id="user-name" name="name">
+
+						</div>
+						<div class="form-group">
+							<label for="user-telephone" class="control-label">手机号:</label>
+							<input type="text" class="form-control" id="user-telephone" name="telephone">
+						</div>
+						<div class="form-group">
+							<label for="user-password" class="control-label">密码:</label>
+
+							<input type="password" class="form-control" id="user-password" name="password">
+						</div>
+						<div class="form-group">
+							<label for="identity" class="control-label">身份:</label>
+							<select class="form-control" id="identity" name="identity">
+								<option value=0> 管理员</option>
+								<option value=1> 普通用户</option>
+							</select>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="submitButton">提交</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</template>
+
+<script>
+
+    $f("df", __, function(_page,_data) {
+//     $f("plugin.startTest",'__');
+        $f("ajax.get",$f("server","users/getUserList"), {page:1,pageSize:10}, "__.yml",_page)();
+    });
+    $f("df","__.yml",function(_data,_page){
+        var data={data:_data};
+        var html=template.render(_page, data);
+        $("#modelDiv").html(html);
+        $("#addUserModal").modal("show");
+
+        var flat = false;
+        //手机号重复验证
+        $("#user-telephone").blur(function () {
+            var userTele = $("#user-telephone").val();
+
+            if (!(/^1[34578]\d{9}$/.test(userTele))){
+                alert("输入的手机号不对，请重新输入");
+                return false;
+            }
+            //发送请求
+            $f("ajax.get",$f("server","users/getTelIsHave"), {userTele:userTele}, "__.checkTele",_page)();
+        });
+        $f("df","__.checkTele",function(_data,_page){
+             console.log(_data);
+
+            if(_data.length>0){
+                alert("手机号已存在，请重新填写");
+                return false;
+            }
+
+            flat=true;
+
+
+        });
+        $("#submitButton").click(function(){
+
+            //校验
+            var userName = $("#user-name").val();
+            var userTele = $("#user-telephone").val();
+            var userPwd =$("#user-password").val();
+
+            if (userName==null||userName==undefined||userName==""){
+                alert("名字不能为空");
+                return  ;
+            }
+            if(userName.length>20){
+                alert("输入的名字过长");
+                return  ;
+            }
+            if (!(/^1[34578]\d{9}$/.test(userTele))){
+                alert("输入的手机号不对，请重新输入");
+                return  ;
+            }
+
+            if (userPwd==null||userPwd==undefined||userPwd==""){
+                alert("密码不能为空");
+                return  ;
+            }
+
+            if (!flat){
+                alert("手机号已存在，请重新填写");
+                return  ;
+            }
+
+            if(userPwd.length>20){
+                alert("输入的密码过长");
+                return  ;
+            }
+                $("#addUserModal").modal("hide");
+                //发送请求
+                $f("ajax.post",$f("server","users/addUser"), $("form").serialize(), "__.addUser",_page)();
+
+
+
+        });
+
+    });
+
+    $f("df","__.addUser",function(_data,_page){
+
+        console.log(_data.affectedRows);
+        if(_data.affectedRows==1){
+            alert("添加成功");
+
+            $f("plugin", "user", 0);
+        }else{
+            alert("添加失败");
+        }
+
+    })
+
+
+
+</script>

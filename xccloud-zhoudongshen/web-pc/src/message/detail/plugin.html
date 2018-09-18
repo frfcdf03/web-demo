@@ -1,0 +1,160 @@
+<template>
+    <div style="padding: 5px;height: 34px;margin-bottom: 10px">
+
+        <button type="button" class="btn btn-primary" id="moreMessage" style="float:right;margin-right: 10px"> 更多 </button>
+
+
+    </div>
+
+    <div id="proContent" style="padding: 5px 15px">
+
+        {{each data1 as value i}}
+
+        <div  >
+            <div class="media-left">
+                <img class="media-object" style="width: 50px;height: 50px" src="img/headpic.png" alt="...">
+            </div>
+            <div class="media-body" >
+
+                <span style="font-size: 20px;line-height: 34px"> {{value.nickname}}</span>
+                <div style="display: flex;float:right; ">
+                    <p class="glyphicon glyphicon-thumbs-up" style="float:right;right: 10px;top: 12px">10</p>
+
+                    <button type="button" class="btn btn-default reply" data="{{value.id}}">回复</button>&nbsp;
+                    <button type="button" class="btn btn-default topmessage" data="{{value.id}}">置顶</button>
+
+                </div>
+
+                <p>{{value.content}}</p>
+
+                {{each data2 as value2 j}}
+                {{if value2.pid==value.id}}
+
+                <div style="background-color: gainsboro" >
+
+                    <p style="padding: 5px 0px"> <span style="color: #2b669a">{{value2.nickname}} 回复：</span>{{value2.content}}</p>
+
+                </div>
+                {{/if}}
+                {{/each}}
+
+
+            </div>
+
+
+            <hr style="margin: 10px 0px">
+        </div>
+
+        {{/each}}
+
+
+    </div>
+
+    <!-- 回复model-->
+    <div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" >回复</h4>
+                </div>
+                <div class="modal-body">
+                    <form >
+                        <input type="hidden" name="id" id="id" value="{{data1.id}}">
+                        <input type="hidden" name="page" id="page" value="{{data1.page}}">
+
+                        <div class="form-group">
+
+                            <textarea class="form-control" rows="5"  id="reply_content" name="content">  </textarea>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="submitButton">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</template>
+<script>
+    $f("df", __, function(_page,_data) {
+        var id =_data.id;
+        var type = _data.type;
+
+        $f("ajax.get",$f("server","message/getMessageList"), {page:1,pageSize:5,type:type,id:id }, "__.message",_page,type,id)();
+    });
+    $f("df","__.message",function(_data,_page,_type,_id) {
+
+        var data={data1:_data[0],data2:_data[2]};
+        var html=template.render(_page, data);
+        $("#replyList").html(html);
+        //更多
+        $("#moreMessage").click(function(){
+            $f("plugin", "message.search",{page:1,pageSize:5,type:_type,id:_id});
+
+        });
+        //回复
+        $(".reply").click(function(){
+
+            $("#replyModal").modal( );
+            //留言id
+            var id=$(this).attr("data");
+            $("#submitButton").click(function(){
+
+                //回复用户id
+                // var user_id=  $f("df", "get", function(userId) {
+                //     return this[userId];
+                // });
+                var user_id=5;
+                //h回复内容
+                var reply_content =$("#reply_content").val();
+
+                $("#replyModal").modal('hide');
+                //发送请求
+                $f("ajax.post",$f("server","message/addMessage"),
+                    {target_type:'留言',target_id:_id,pid:id,reply_content:reply_content,user_id:user_id }, "__.addMessage",_page,_id,_type)();
+
+            })
+
+        });
+        //置顶
+        $(".topmessage").click(function(){
+
+            //留言id
+            var id=$(this).attr("data");
+            //发送请求
+            $f("ajax.get",$f("server","message/topMessage"), { id:id,}, "__.topMessage",_page,_id,_type)();
+
+        });
+
+    })
+    $f("df","__.addMessage",function(_data,_page,_id,_type){
+
+        console.log(_data.affectedRows);
+        if(_data.affectedRows==1){
+            alert("回复成功");
+            console.log(_data.page);
+            $f("plugin", "paintings.price",_id,'paintings');
+        }else{
+            alert("回复失败");
+        }
+
+    });
+    $f("df","__.topMessage",function(_data,_page,_id,_type){
+
+        console.log(_data.affectedRows);
+        if(_data.affectedRows==1){
+
+            $f("plugin",  "paintings.price",_id,'paintings');
+        }else{
+            alert("置顶失败");
+        }
+
+    })
+
+</script>

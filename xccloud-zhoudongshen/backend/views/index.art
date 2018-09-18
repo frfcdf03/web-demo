@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html style="height:100%;width:100%;">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>周东申艺术馆</title>
+    <script type="text/javascript" src="../../web-pc/js/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="../../web-pc/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="../../web-pc/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../web-pc/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <link rel="stylesheet" href="../../web-pc/bootstrap-fileinput/css/fileinput.min.css">
+    <script type="text/javascript" src="../../web-pc/bootstrap-fileinput/js/locales/zh.js"></script>
+    <!--首页样式-->
+    <link href="../../web-pc/index/css/style.css" rel="stylesheet">
+    <link href="../../web-pc/index/css/style-responsive.css" rel="stylesheet">
+    <script src="https://cdn.ckeditor.com/ckeditor5/10.1.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/10.1.0/decoupled-document/ckeditor.js"></script>
+ 
+    
+    
+    
+
+
+    <link href="../../web-pc/bootstrap-datetime/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <script src="../../web-pc/bootstrap-datetime/moment-with-locales.js"></script>
+    <script src="../../web-pc/bootstrap-datetime/bootstrap-datetimepicker.min.js"></script>
+    <script src="../../web-pc/bootstrap-datetime/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../../web-pc/axios/dist/axios.min.js"></script>
+    <script src="/web-pc/js/uploadAdapter.js"></script>
+    <script type="text/javascript" src ="/web-pc/ckeditor5/translations/zh-cn.js"></script>
+   <style>
+            .document-editor-editable {
+                        border: 1px solid var(--ck-color-base-border) !important;
+                        border-radius: var(--ck-border-radius);
+
+                        /* Set vertical boundaries for the document editor. */
+                        max-height: 700px;
+
+                        /* This element is a flex container for easier rendering. */
+                        display: flex;
+                        flex-flow: column nowrap;
+            }
+            .modal-header {
+                        background: #313335;
+            }
+            .close{
+                        color: white;
+                        opacity: 100;
+            }
+            td img{
+                display:none;
+            }
+	
+	    ul.sub li a.active, sub li a:hover, ul.sub li a:focus {
+    			background: none;
+    			color: #fff !important;
+
+	}		
+    </style>
+</head>
+
+<body style="height:100%;">
+<!--登陆弹窗-->
+<div id="login" data=""></div>
+<section id="container" >
+
+    <!--header start-->
+    <header class="header black-bg">
+        <div class="sidebar-toggle-box">
+            <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+        </div>
+        <!--logo start-->
+        <a href="#" class="logo"><b>周东申艺术馆</b></a>
+        <!--logo end-->
+
+        <div class="top-menu">
+            <ul class="nav pull-right top-menu">
+                <li><a id="loginName" style="background-color: transparent;border:0px !important" class="logout">{{userName[0].user_name}}</a></li>
+                <li><a id="logoutbtn" class="logout" onclick="$f('logout',0)">退出</a></li>
+            </ul>
+        </div>
+
+    </header>
+    <!--header end-->
+       
+    <!--菜单-->
+    <aside>
+        <div id="sidebar"  class="nav-collapse ">
+            <!-- sidebar menu start-->
+            <ul class="sidebar-menu" id="nav-accordion">
+
+                <li class="mt" onclick="$f('plugin', 'user', 0)">
+                    <a class="active" >
+                        <i class="fa fa-dashboard"></i>
+                        <span>用户管理</span>
+                    </a>
+                </li>
+
+
+                <li class="sub-menu" onclick="$f('plugin', 'wxuser', 0)">
+                    <a href="javascript:;" >
+                        <i class="fa fa-desktop"></i>
+                        <span>微信用户管理</span>
+                    </a>
+                </li>
+                <li class="sub-menu" onclick="$f('plugin', 'paintings', 0)">
+                    <a href="javascript:;" >
+                        <i class="fa fa-desktop"></i>
+                        <span>画作管理</span>
+                    </a>
+                </li>
+                 <li class="sub-menu">
+                     <a href="javascript:;" >
+                         <i class="fa fa-cogs"></i>
+                         <span>文章管理</span>
+                     </a>
+                     <ul class="sub">
+                         <li onclick="$f('plugin', 'news', 'news')"><a  >新闻管理</a></li>
+                         <li onclick="$f('plugin', 'artist', 'artist')"><a>艺术家管理</a></li>
+
+                     </ul>
+                 </li>
+
+
+                <li class="sub-menu">
+                    <a href="javascript:;" >
+                        <i class="fa fa-cogs"></i>
+                        <span>活动管理</span>
+                    </a>
+                    <ul class="sub">
+                        <li onclick="$f('plugin', 'onActivity', 'onActivity')"><a  >线上活动</a></li>
+                        <li><a  >线下活动</a></li>
+
+                    </ul>
+                </li>
+
+                <li class="sub-menu" onclick="$f('plugin', 'message', 0)" >
+                    <a href="javascript:;" >
+                        <i class="fa fa-desktop"></i>
+                        <span>留言管理</span>
+                    </a>
+                </li>
+
+            </ul>
+            <!-- sidebar menu end-->
+        </div>
+    </aside>
+
+
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+
+            <div id="content" style="height:100%">
+
+            </div>
+
+
+
+        </section>
+    </section>
+
+
+</section>
+
+
+
+
+
+    
+    <script type="text/javascript" src="../../web-pc/js/js-yaml.min.js"></script>
+    <script type="text/javascript" src="../../web-pc/js/hrframe.js"></script>
+    <script type="text/javascript" src="../../web-pc/js/template-web.js"></script>
+    <script src="../../web-pc/bootstrap/js/extendPagination.js"></script>
+    <script src="../../web-pc/js/common-tool.js"></script>
+        <script src="../../web-pc/js/echarts.common.min.js"></script>
+
+
+
+    <!--首页整体js-->
+    <script class="include" type="text/javascript" src="../../web-pc/index/js/jquery.dcjqaccordion.2.7.js"></script>
+    <script src="../../web-pc/index/js/jquery.scrollTo.min.js"></script>
+    <script src="../../web-pc/index/js/common-scripts.js"></script>
+
+
+
+
+    <script>
+
+            $f('plugin', 'user', 0);
+            $f("df","logout",function(_data){
+                $f("ajax.get","/backend/logout",_data,function(_data){window.location.replace("/login");},0)();
+                
+            });
+    </script>
+ 
+
+</body>
+
+</html>

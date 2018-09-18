@@ -1,0 +1,64 @@
+<template>
+    <br>
+    <span class="small-title" >价格走势图：</span>
+    <div align="center" id="main" style="width: 100%;height:350px;">
+
+    </div>
+</template>
+<script>
+
+    
+    $f("df", ___, function (_page, _data) {
+        $f("ajax.get", $f("server", "price/getPaintingPriceList"), {
+            type: _data.type,
+            id: _data.id
+        }, "___.detail", _page,_data)();
+
+    });
+    $f("df", "___.detail", function (_data,_page,pare) {
+        if(_data.length<=0) return;
+        var data = {data: _data,pare:pare};
+        var html = template.render(_page)
+        $("#price_content").html(html);
+        //折线图
+        var myChart = echarts.init(document.getElementById('main'));
+        //时间和价格的数组值
+        var data_date = new Array();
+        var data_price = new Array();
+        for (var i = 0; i < data.data.length; i++) {
+            data_date[data.data.length - 1 - i] = data.data[i].date.substring(0,7);
+            data_price[data.data.length - 1 - i] = data.data[i].price;
+        }
+        // 指定图表的配置项和数据
+        option = {
+            xAxis: {
+                type: 'category',
+                data: data_date,
+                axisLabel: {
+                    interval:0,
+                    rotate:40
+                }
+
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    margin: 2
+                }
+            },
+            series: [{
+                data: data_price,
+                type: 'line',
+                smooth: true,
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'top'
+                    }
+                },
+            }]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    });
+</script>

@@ -1,0 +1,82 @@
+<template>
+
+
+
+    <div>
+        {{each data as value i}}
+
+        {{if data[i].paintings_list!=0}}
+
+        <div class="weui-panel weui-panel_access"  onclick="$f('plugin', 'paintings.paintingsList.xilieList.detail',{{value.type_id}})">
+            <a href="#f->plugin paintings.paintingsList.xilieList.detail {{value.type_id}}">
+            <div class="weui-panel__bd" >
+                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg" data-id=2>
+                    {{each data[i].paintings_list as value2 j}}
+                    {{if j<=5}}
+                    <div class="weui-media-box__hd" style="padding-bottom: 5px">
+                        <img class="weui-media-box__thumb" src="{{value2.paintings_img}}" alt="">
+                    </div>
+                    {{/if}}
+                    {{/each}}
+
+                </a>
+                <a href="#f->plugin paintings.paintingsList.xilieList.detail {{value.type_id}};" class="weui-media-box weui-media-box_appmsg">
+                    <div class="weui-media-box__bd" style="padding-top: 5px">
+
+                        <h4 class="">{{value.type_name}}   <span class="weui-media-box__title" style="display: flex;float: right">{{value.price}}</span></h4>
+                        <!--<span  class="weui-media-box__desc">价格：{{value.price}}</span>-->
+
+                        {{if value.content!=null }}
+                            <p class="jianjie weui-panel__hd">简介：
+                            {{if value.content.length>70 }}
+                            {{value.content.substring(0,70)}}...
+
+                            {{else}}
+
+                            {{value.content}}
+
+                            {{/if}}
+                            </p>
+                        {{/if}}
+                    </div>
+                </a>
+            </div>
+            </a>
+        </div>
+
+        {{/if}}
+        {{/each}}
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", ___, function (_page, _data) {
+        window.history.pushState(null,null,"#f->plugin home 0");
+        window.history.pushState(null,null,"#f->plugin paintings.paintingsList.xilieList {pid:7}");
+        if(typeof(_data)!="object"){
+  var _data=eval("("+_data+")");
+}
+        var pid =_data.pid;
+        $f("ajax.get", $f("server", "paintings/getPaintingsList"), { pid: pid  }, "___.xilie", _page)();
+
+    });
+
+
+    $f("df", "___.xilie", function (_data, _page) {
+
+        var data = {
+            data: _data,
+
+        };
+        var html = template.render(_page, data);
+        if($("#paintingsList_content").length==0){
+            $f("plugin","paintings.paintingsList",2);
+        }
+        $("#paintingsList_content").html(html);
+        $("#xilie").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+
+
+    });
+</script>

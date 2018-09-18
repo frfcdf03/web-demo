@@ -1,0 +1,45 @@
+<template>
+    <div style="text-align: right;">
+    <button type="button" class="btn btn-primary"  style="margin:10px 0px" onclick=" $f('plugin', 'onActivity.addNews', 0);">
+        添加
+    </button>
+    </div>
+    <div class="form-inline" style="float:right;margin:10px 0px">
+        <div class="form-group">
+            <input type="text" class="form-control" id="keyword" placeholder="请输入关键字">
+        </div>
+        <button type="submit" id="search" class="btn btn-default">查询</button>
+    </div>
+    <div id="listContent">
+
+
+    </div>
+
+    <div id="modelDiv">
+
+    </div>
+    <div id="callBackPager" style="text-align: center"></div>
+
+</template>
+<script>
+ $f("df", __, function(_page,_data) {
+//     $f("plugin.startTest",'__');
+     var data={data:_data};
+     var html=template.render(_page, data)
+     console.log(data);
+     $("#content").html(html);
+     //加载列表
+     $f("plugin", "onActivity.listPage", {page:1,pageSize:10,modleName:_data});
+
+
+
+     //查询
+     $("#search").click(function(){
+         var keyword=$("#keyword").val();
+         $f("plugin", "onActivity.listPage", {keyword:keyword,page:1,pageSize:10,modleName:_data});
+
+     })
+ });
+
+
+</script>

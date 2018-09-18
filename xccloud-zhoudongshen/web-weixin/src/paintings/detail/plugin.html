@@ -1,0 +1,113 @@
+<template>
+    <style>
+        .small-title{
+            color:black;
+            font-size: 18px
+        }
+    </style>
+    <div style="padding: 1em">
+    <div data-id="{{data.id}}">
+        <h1 align="center">{{data.paintings_name}}</h1>
+        <div align="right">
+                <ul class="weui-media-box__info" style="float: right">
+                        <li class="weui-media-box__info__meta " follow ="{{data.follow}}" data="{{data.id}}" data2 ="5" onclick = "$f('follow',this,0)">
+                            
+                                {{if data.follow==0}}
+                                <img src="img/icons8-heart-26.png" style="height:22px;">
+
+                                {{else}}
+                                <img src="img/icons8-heart-filled-50.png" style="height:22px;">
+
+                                {{/if}}
+                             <span data="{{data.lookCount}}">{{data.lookCount}}</span>
+
+
+                        </li>
+            </ul>
+        </div>
+        <div align="left">
+            <div>
+                <label>编号：</label>
+                <span>{{data.paintings_id}}</span>
+            </div>
+
+            <div>
+                <label>规格尺寸：</label>
+                <span>{{data.paintings_spec}}</span>
+            </div>
+            <div>
+                <label>创作年代：</label>
+                <span>{{data.paintings_year}}</span>
+            </div>
+        </div>
+        <div align="center" >
+            <img src="{{data.paintings_img}}" style="width:100%;height:100%">{{data.paintings_name}}</img>
+        </div>
+        
+        <div  id="price_content" style="height:100%;">
+
+        </div>
+
+        {{if data.paintings_content!=null}}
+        <span class="small-title" style="display: inline-block;margin-bottom: 12px">简介：</span>
+        <div style="padding:0px 15px 0px 15px;">{{#data.paintings_content}}</div>
+        {{/if}}
+
+    </div>
+
+    <div id="liuyan_content">
+
+    </div>
+
+
+    </div>
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+        //     $f("plugin.startTest",'__');
+        //window.history.forward(1);
+        $f("ajax.get", $f("server", "paintings/getPaintingById"), {
+            id: _data
+        }, "___.detail", _page,_data)();
+        
+    });
+    $f("df", "___.detail", function (_data, _page,pid) {
+
+        var data = {
+            data: _data[0]
+        };
+
+        $f("plugin","price",{id:data.data.id,type:1});
+        $f("plugin","message",{type:5,id:data.data.id});
+        
+        var html = template.render(_page, data)
+        console.log(data);
+        
+        $("#container").html(html);
+        $('body').prop('scrollTop', '0');
+        console.log(document.images[1].src);
+        wx.onMenuShareAppMessage({
+            title: data.data.paintings_name, // 分享标题
+            desc:  $("div p").html(), // 分享描述
+            link: $f("get", "domain") + "/wx-redirect?plugin=paintings.detail&param=" + pid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: document.images[1].src, // 分享图标
+            trigger: function (res) {
+                // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+            },
+            success: function (res) {},
+            cancel: function (res) {},
+            fail: function (res) {}
+        });
+        wx.onMenuShareTimeline({
+            title: data.data.paintings_name, // 分享标题
+            link: $f("get", "domain") + "/wx-redirect?plugin=paintings.detail&param=" + pid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl:document.images[1].src,  // 分享图标
+            trigger: function (res) {
+                // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+            },
+            success: function (res) {},
+            cancel: function (res) {},
+            fail: function (res) {}
+        });
+    });
+</script>

@@ -1,0 +1,46 @@
+<template>
+    <div id="lineChart" style="height: 33%">
+
+    </div>
+    <div id="priceList" style="height: 33%">
+
+    </div>
+    <div id="replyList" style="height: 33%;">
+
+
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        //     $f("plugin.startTest",'__');
+        //         $f("ajax.get", $f("server", "paintings/getPaintingsType"), {}, "__.typeEnd", _page)();
+        var type = _data.type;
+        var id = _data.id;
+        if(type=="paintings"){
+            $f("ajax.get", $f("server", "price/getPaintingPrice"), { page: 1,pageSize: 10,type: type,id : id}, "__.yml", _page,type,id)();
+
+        }else {
+            $f("ajax.get", $f("server", "price/getTypePrice"), { page: 1,pageSize: 10,type: type,id : id}, "__.yml", _page)();
+        };
+    });
+
+    $f("df", "__.yml", function (_data, _page,_type,_id) {
+        var type=_type;
+        var id=_id;
+        var data = _data;
+        console.log("*******************88")
+        console.log(data);
+        $f("plugin", "paintings.price.priceLineChart", data);
+        $f("plugin", "paintings.price.priceList", data);
+        // $f("plugin", "paintings.price.message", {type:type,id:id,page:1,pageSize:5});
+        $f("plugin", "message", {type:'画作',id:id});
+        var html = template.render(_page, data);
+        console.log(data);
+
+        $("#pContent").html(html);
+
+    });
+
+
+</script>

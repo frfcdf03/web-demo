@@ -1,0 +1,80 @@
+<!-- 列表页 -->
+<template>
+    <div>
+    {{each data1 as value i}}
+
+        <div class="weui-flex" >
+            <div   style="width: 50px;margin-right: 3px ">
+                <div class="placeholder"> 
+                    {{if value.img==null}}
+                     <img style="height: 50px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAAAeFBMVEUAwAD///+U5ZTc9twOww7G8MYwzDCH4YcfyR9x23Hw+/DY9dhm2WZG0kbT9NP0/PTL8sux7LFe115T1VM+zz7i+OIXxhes6qxr2mvA8MCe6J6M4oz6/frr+us5zjn2/fa67rqB4IF13XWn6ad83nxa1loqyirn+eccHxx4AAAC/klEQVRo3u2W2ZKiQBBF8wpCNSCyLwri7v//4bRIFVXoTBBB+DAReV5sG6lTXDITiGEYhmEYhmEYhmEYhmEY5v9i5fsZGRx9PyGDne8f6K9cfd+mKXe1yNG/0CcqYE86AkBMBh66f20deBc7wA/1WFiTwvSEpBMA2JJOBsSLxe/4QEEaJRrASP8EVF8Q74GbmevKg0saa0B8QbwBdjRyADYxIhqxAZ++IKYtciPXLQVG+imw+oo4Bu56rjEJ4GYsvPmKOAB+xlz7L5aevqUXuePWVhvWJ4eWiwUQ67mK51qPj4dFDMlRLBZTqF3SDvmr4BwtkECu5gHWPkmDfQh02WLxXuvbvC8ku8F57GsI5e0CmUwLz1kq3kD17R1In5816rGvQ5VMk5FEtIiWislTffuDpl/k/PzscdQsv8r9qWq4LRWX6tQYtTxvI3XyrwdyQxChXioOngH3dLgOFjk0all56XRi/wDFQrGQU3Os5t0wJu1GNtNKHdPqYaGYQuRDfbfDf26AGLYSyGS3ZAK4S8XuoAlxGSdYMKwqZKM9XJMtyqXi7HX/CiAZS6d8bSVUz5J36mEMFDTlAFQzxOT1dzLRljjB6+++ejFqka+mXIe6F59mw22OuOw1F4T6lg/9VjL1rLDoI9Xzl1MSYDNHnPQnt3D1EE7PrXjye/3pVpr1Z45hMUdcACc5NVQI0bOdS1WA0wuz73e7/5TNqBPhQXPEFGJNV2zNqWI7QKBd2Gn6AiBko02zuAOXeWIXjV0jNqdKegaE/kJQ6Bfs4aju04lMLkA2T5wBSYPKDGF3RKhFYEa6A1L1LG2yacmsaZ6YPOSAMKNsO+N5dNTfkc5Aqe26uxHpx7ZirvgCwJpWq/lmX1hA7LyabQ34tt5RiJKXSwQ+0KU0V5xg+hZrd4Bn1n4EID+WkQdgLfRNtvil9SPfwy+WQ7PFBWQz6dGWZBLkeJFXZGCfLUjCgGgqXo5TuSu3cugdcTv/HjqnBTEMwzAMwzAMwzAMwzAMw/zf/AFbXiOA6frlMAAAAABJRU5ErkJggg==" alt=""></div>
+                    {{else}}
+                     <img style="height: 50px" src="{{value.img}}">
+                    {{/if}}
+            </div>
+            <div style="" class="weui-flex__item">
+                <h4 class="weui-media-box__title">{{value.nickname}}</h4>
+                <p  >{{value.content}}</p>
+                <span style="height: 21px">{{value.create_time}} <p style="float:right;right: 10px;line-height: 21px;height: 21px">
+                    {{if data3.length>0 && data3[0].identity==1}}
+                    <img src="img/xiaoxi.png" style="width: 17px;height: 17px;position: relative;top: 1px;" class="huifu" data="{{value.id}}">
+                    {{/if}}
+                    <span follow ="{{value.follow}}" data="{{value.id}}" data2 ="0" onclick = "$f('follow',this,1)">
+                            {{if value.follow==0}}
+                            <img src="img/xin.png" style="width: 21px;height: 21px;position: relative;top: 3px;">
+                            {{else}}
+                              <img src="img/icons8-heart-filled-50.png" style="width: 21px; height: 21px; position: relative; top: 3px;">
+                             {{/if}}
+                            <span data="{{value.lookCount}}">{{value.lookCount}}</span>
+
+                        </span>
+                </span>
+                {{each data2 as value2 j}}
+                {{if value2.message_id==value.id}}
+
+                <div  style="background-color: gainsboro" >
+
+                    <p weui-media-box__desc style="padding: 5px 0px"> <span style="color: #2b669a">{{value2.user_name}} 回复：</span>{{value2.reply_content}}</p>
+
+                </div>
+                {{/if}}
+                {{/each}}
+
+            </div>
+
+        </div>
+
+        {{/each}}
+        
+    </div>
+
+</template>
+<script>
+    $f("df", ___, function(_page,_data) {
+        var page = _data.page;
+        var pageSize = _data.pageSize;
+        var target_type = _data.target_type;
+        var target_id = _data.target_id;
+
+        $f("ajax.get",$f("server","message/getWxMessageList"), {page:page,pageSize:pageSize,target_type:target_type,target_id:target_id}, "___.getMessage",_page)();
+
+    });
+
+    $f("df","___.getMessage",function(_data,_page){
+        var data={data1:_data[0],data2:_data[1],data3:_data[2]};
+        var html=template.render(_page, data);
+        $("#messageList").append(html);
+        if (_data[0].length<5){
+
+
+            $(".js-load-more").html("<p style='color: grey;margin-top: 9vw'>没有数据了...</p>");
+
+
+        }
+
+
+    });
+
+
+
+</script>

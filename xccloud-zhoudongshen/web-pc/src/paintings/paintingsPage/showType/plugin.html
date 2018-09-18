@@ -1,0 +1,69 @@
+<template>
+
+    {{each data1.type_list as value1 i}}
+    <span class="ptype ptypeno" data="{{value1.type_id}}">{{value1.type_name}}</span>
+    {{/each}}
+    {{each data2.type_list as value2 j}}
+    <span class="ptype ptypeno" data="{{value2.type_id}}">{{value2.type_name}}</span>
+    {{/each}}
+    <span class="ptype ptypeno" data="12">金奖作品</span>
+</template>
+<script>
+    $f("df", __, function (_page,_data) {
+
+        var paintings_type=_data.paintings_type;
+        $f("ajax.get", $f("server", "paintings/getPaintingsType"), null, "__.paintingsType",_page,paintings_type)();
+
+    });
+
+    $f("df", "__.paintingsType", function (_data, _page,paintings_type) {
+        var data = {data1: _data[0],data2:_data[1]};
+
+        console.log(data);
+        var html = template.render(_page, data)
+
+        $(".ptypes").html(html);
+
+        //分类管理显示
+
+        var paintings_type=paintings_type;
+        var ptArr=paintings_type.split(',');
+
+        var spanArr=$(".ptype");
+
+        spanArr.each(function (i) {
+            var val=$(this).attr("data");
+
+            for(var j=0;j<ptArr.length;j++){
+
+                var ptval=ptArr[j];
+                if(val==ptval){
+
+                    $(this).addClass("ptypeok");
+                }
+            }
+
+
+        })
+
+        //点击选择类型
+        $(".ptype").click(function(){
+
+            if($(this).hasClass("ptypeok")){
+                $(this).removeClass("ptypeok");
+                var type_id=$(this).attr("data");
+            } else{
+                $(this).addClass("ptypeok");
+            }
+        });
+
+
+
+
+
+    });
+
+
+
+
+</script>

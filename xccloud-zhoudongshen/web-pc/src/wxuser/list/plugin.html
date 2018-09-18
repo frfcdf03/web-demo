@@ -1,0 +1,123 @@
+<!-- 列表页 -->
+<template>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th scope="col" >序号</th>
+        <th scope="col" >头像</th>
+        <th scope="col" >昵称</th>
+        <th scope="col" >关注日期</th>
+        <th scope="col" >操作</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {{each data as value i}}
+    <tr>
+        <td scope="row"> {{value.id}}</td>
+        <td><img src="{{value.img}}" style="width: 50px;height: 50px;display: block"></td>
+        <td>{{value.nickname}}</td> 
+        <td>{{value.follow_time}}</td> 
+
+        <td>
+           
+            {{if value.is_able==0}}
+                <a class="btn btn-warning btn-sm isable" data-id="{{value.id}}" data-state="1">禁用</a>
+                {{if value.identity==0}}
+                <a class="btn btn-warning btn-sm identity" data-id="{{value.id}}" data-identity="1">管理员</a>
+                {{else}}
+                    <a class="btn btn-warning btn-sm identity" data-id="{{value.id}}" data-identity="0">普通用户</a>
+                {{/if}}
+            {{else}}
+                <a class="btn btn-warning btn-sm isable" data-id="{{value.id}}" data-state="0">启用 </a>
+                
+            {{/if}}
+
+        
+            
+        </td>
+
+    </tr>
+    {{/each}}
+
+    </tbody>
+</table>
+   
+</template>
+<script>
+    $f("df", __, function(_page,_data) {
+
+        $f("ajax.get",$f("server","users/getWxUserList"), {page:_data.page,pageSize:_data.pageSize,keyword:_data.nickname}, "__.WxUser",_page)();
+    });
+
+    $f("df","__.WxUser",function(_data,_page){
+
+        var data={data:_data[0]};
+        var html=template.render(_page, data);
+        $("#listContent").html(html);
+
+
+
+         //是否禁用操作
+         $('.isable').click(function () {
+            var id = $(this).attr("data-id");
+            var state = $(this).attr("data-state");
+            $f("ajax.get", $f("server", "users/changeIsable"), {id: id, state: state}, "__.isable", state,_page,_data[2].currPage)();
+        });
+        //设置用户身份
+        
+        $('.identity').click(function () {
+            var id = $(this).attr("data-id");
+            var identity = $(this).attr("data-identity");
+            $f("ajax.get", $f("server", "users/changeIdentity"), {id: id, identity: identity}, "__.identity", identity,_page,_data[2].currPage)();
+        });
+
+        //分页
+        $('#callBackPager').extendPagination({
+            totalCount: _data[1][0].totalCount,
+            limit: 10,
+            defaultPage:_data[2].currPage,
+            callback: function (curr, limit, totalCount) {
+                $f("plugin", "wxuser.list", {page:curr,pageSize:limit});
+            }
+
+        });
+
+
+    });
+    //禁用结果处理
+    $f("df", "__.isable", function (_data, state,_page,currPage) {
+        var data = _data;
+        //console.log(data);
+        var message;
+        if (state == 1) {
+            message = "已禁用！";
+        } else {
+            message = "已启用！";
+        }
+        if (data.affectedRows == 1 && data.changedRows == 1) {
+            alert(message);
+            $f("plugin", "wxuser.list",{page:currPage,pageSize:10});
+        } else {
+            alert("操作失败");
+        }
+    });
+      //设置身份结果处理
+      $f("df", "__.identity", function (_data, identity,_page,currPage) {
+        var data = _data;
+        //console.log(data);
+        var message;
+        if (identity == 1) {
+            message = "已修改为管理员！";
+        } else {
+            message = "已修改为普通用户！";
+        }
+        if (data.affectedRows == 1 && data.changedRows == 1) {
+            alert(message);
+            $f("plugin", "wxuser.list",{page:currPage,pageSize:10});
+        } else {
+            alert("操作失败");
+        }
+    });
+   
+</script>

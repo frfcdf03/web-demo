@@ -1,0 +1,159 @@
+<template>
+<style>
+    iframe{
+        /* width: 0;
+        height: 0;
+        border: 0 px;  */
+        display: none;
+    }
+</style>
+
+    <div class="modal fade bs-example-modal-lg" id="addNewsModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">添加线上活动</h4>
+                </div>
+                <div class="modal-body">
+                    <form style="padding-top: 30px" id="newsForm" action="test" method="POST" enctype="multipart/form-data" target= "hidden_frame" >
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <label for="titleAdd" class="col-sm-2 col-form-label">标题：</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="titleAdd" id="titleAdd"
+                                           placeholder="请输入标题">
+                                </div>
+                            </div>
+                            <div class="form-group row" id="uploadForm">
+                                
+                                <label for="exampleInputFile" class="col-sm-2 col-form-label">缩略图： </label>
+                                <div class="col-sm-10">
+                                <!-- <span class="btn btn-default btn-file">
+                                    Browse <input type="file" id="exampleInputFile"  name="myImage" onclick="$('#fileHelp').html('请上传图片')">
+                                </span> -->
+                                <input id="exampleInputFile"  name="myImage" type="file">
+                                <small id="fileHelp" class="form-text text-muted"></small>
+                                <!-- <button type="submit" style="display: block" id="submitbtn">确认上传</button>  -->
+                                <iframe  name="hidden_frame" id="hidden_frame" onload="$f('__.upload',this)" ></iframe>
+                                <input type="text" class="form-control-file" id="img_path" name="img_path" style="display: none">
+                            </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="contentAdd" class="col-sm-2 col-form-label">内容：</label>
+                                <div class="col-sm-10">
+                                        <div class="document-editor">
+                                        <div class="document-editor-toolbar"></div>
+                                        <div class="document-editor-editable-container">
+                                            <div class="document-editor-editable">
+                                                <p></p>
+                                            </div>
+                                        </div>
+                                </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="savaNews">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+//     $f("plugin.startTest",'__');
+        var data = {data: _data};
+        var html = template.render(_page, data);
+        console.log(data);
+        $("#modelDiv").html(html);
+        $("#addNewsModal").modal("show");
+        var action = $f("server", "upload/main");
+        console.log(action);
+        $('#exampleInputFile').fileinput({language: 'zh'});
+        $('.btn-file').click(function(){
+            $('#fileHelp').html("请上传图片");
+        });
+        $('#newsForm').attr('action',action);
+
+        DecoupledEditor
+        .create( document.querySelector( '.document-editor-editable'), {
+            language:"zh-cn",
+
+        })
+        .then(editor=>{
+            var toolbarContainer = document.querySelector('.document-editor-toolbar');
+            toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+            editor.config.allowedContent = true;
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader)=>{
+                    return new UploadAdapter(loader);
+                };
+            $("#savaNews").click(function () {
+
+
+            var titleAdd=$("#titleAdd").val();
+            var contentAdd=editor.getData();
+            var img_path =$('#img_path').val();
+            if (img_path == "" || img_path == null) {
+               var confitm = confirm("未上传图片，确定提交？");  
+            }else {
+                img_path="/"+img_path;
+            }
+            if (titleAdd == "" || titleAdd == null) {
+                alert("标题不能为空");
+                return;
+            }
+            if (contentAdd == "<p>&nbsp;</p>") {
+                alert("内容不能为空");
+                return;
+            }
+            $("#addNewsModal").modal("hide");
+            $f("ajax.post",$f("server","news/addNews"),{typeAdd:4,titleAdd:titleAdd,editor:contentAdd,img_path:img_path} , "__.addNews",_page)();
+        });
+    })
+        .catch(err=>{console.error(err.stack);});
+
+
+
+
+
+    });
+    $f("df", "__.addNews", function (_data, _page) {
+
+        console.log(_data.affectedRows);
+        if (_data.affectedRows == 1) {
+            alert("添加成功");
+
+            $f("plugin", "onActivity", "onActivity");
+        } else {
+            alert("添加失败");
+        }
+
+    });
+    $f("df","__.upload",function(tag){
+            var path = $(tag).contents().find('body').html();
+            if(path.length<=0)
+            $('#fileHelp').html("请上传图片");
+            else{
+                if(path=="err empty file!")
+                {
+                  alert("上传图片不能为空！");
+                }
+                else
+                {
+                    $('#fileHelp').html("上传成功");
+                    $('#img_path').val(path);
+                    console.log( $('#img_path').val());
+                }
+            }
+    });
+
+</script>

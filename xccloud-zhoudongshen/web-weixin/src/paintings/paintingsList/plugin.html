@@ -1,0 +1,75 @@
+<template>
+    <div class="page">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-navbar">
+                    <div class="weui-navbar__item" id="allp" onclick="window.location.href='#f->plugin paintings.paintingsList.content 0'">
+                        
+                        全部作品
+                       
+                    </div>
+                    <div class="weui-navbar__item" id="taozhuang" onclick="window.location.href='#f->plugin paintings.paintingsList.taozhuangList {pid:6}'">
+                       
+                        套装
+                     
+                    </div>
+                    <div class="weui-navbar__item" id="xilie" onclick="window.location.href='#f->plugin paintings.paintingsList.xilieList {pid:7}'">
+                       
+                        系列
+                        
+                    </div>
+                </div>
+                <div class="weui-tab__panel">
+                    <div id="paintingsList_content">
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</template>
+<script>
+    $f("df", ___, function(_page,_data) {
+        $("title").html("周东申艺术馆");
+        var data = {data: _data};
+        var html = template.render(_page, data)
+        $("#paintings.paintingsList").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $("#container").html(html);
+        $('.weui-navbar__item').on('click', function () {
+            $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        });
+      
+            if(_data==1){
+                $("#taozhuang").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+               $f('plugin', 'paintings.paintingsList.taozhuangList',{pid:6});
+            }
+            else if(_data==2){
+                $("#xilie").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+                $f('plugin', 'paintings.paintingsList.xilieList', {pid:7});
+            }
+            else{
+                window.location.href="#f->plugin paintings.paintingsList.content 0";
+                $("#allp").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+                $f('plugin', 'paintings.paintingsList.content', 0);
+
+            }
+        //用户点击单一画作时的事件
+        $(".toPaintingsDetail").click(function () {
+            var id = $(this).attr("data-id");
+            $f('plugin', 'paintings.detail',id );
+
+            //$("#iosDialog2").fadeIn(200);
+        });
+
+    });
+
+
+
+
+
+</script>

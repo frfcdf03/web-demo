@@ -1,0 +1,66 @@
+<template>
+    <style>
+       span.weui-media-box__desc>p{
+           display: inline-block;
+       }
+    </style>
+    <div class="page">
+        <div class="page__bd">
+
+            {{each data as value i}}
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__bd" onclick="$f('plugin', 'paintings.detail', {{value.id}})">
+                    <a href="#f->plugin paintings.detail {{value.id}}">
+                    <div class="weui-panel weui-panel_access">
+                        <a href="#f->plugin paintings.detail {{value.id}}" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="{{value.paintings_img}}" alt="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <h4 class="weui-media-box__title">{{value.paintings_name}}</h4>
+                                <p class="weui-media-box__desc">价格：{{value.price}}</p>
+                                <p class="weui-media-box__desc">编号：{{value.paintings_id}}</p>
+
+                                {{if value.paintings_content==null }}
+                                <span  class="weui-media-box__desc">简介：{{value.paintings_content}}</span>
+                                {{else}}
+                                {{if value.paintings_content.length>70 }}
+                                <span  class="weui-media-box__desc">简介：{{#value.paintings_content.substring(0,70)}}...</span>
+                                {{else}}
+                                <span  class="weui-media-box__desc">简介：{{#value.paintings_content}}</span>
+                                {{/if}}
+                                {{/if}}
+                            </div>
+                        </a>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            {{/each}}
+
+
+
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+        window.history.pushState(null,null,"#f->plugin home 0");
+        window.history.pushState(null,null,"#f->plugin paintings.paintingsList.content 0");
+        $f("ajax.get", $f("server", "paintings/getAllPaintingsList"), null, "___.content", _page)();
+
+    });
+    $f("df", "___.content", function (_data, _page) {
+
+        var data = {
+            data: _data,
+
+        };
+        var html = template.render(_page, data)
+        if($("#paintingsList_content").length==0){
+            $f("plugin","paintings.paintingsList",0);
+        }
+        $("#paintingsList_content").html(html);
+        $("#allp").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+    });
+</script>

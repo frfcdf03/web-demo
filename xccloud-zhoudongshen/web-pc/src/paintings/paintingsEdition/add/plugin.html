@@ -1,0 +1,88 @@
+<template>
+
+
+
+
+    <div class="modal fade " id="addEditionModal">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel" >添加版本</h4>
+                </div>
+                <div class="modal-body">
+                    <form  id="editionForm">
+                        <div class="modal-body">
+
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">画作版本号：</label>
+                                <div class="input-group col-sm-6" >
+                                    <input type="text" class="form-control" name="paintings_editionNum" id="editionNum"
+                                           placeholder="请输入画作版本号">
+
+                                </div>
+                            </div>
+                            
+                            
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="$f('__.add',{{data.paintings_id}})">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+//     $f("plugin.startTest",'__');
+        var data = {data: _data};
+        var html = template.render(_page, data);
+        console.log(data);
+        $("#modelDiv").html(html);
+        $("#addEditionModal").modal("show");
+
+
+    });
+
+    $f("df", "__.add", function (paintings_id) {
+  
+        var editionNum=$("#editionNum").val();
+        if (editionNum == "" || editionNum == null) {
+            alert("版本号不能为空");
+            return;
+        }
+        $("#addEditionModal").modal("hide");
+        $f("ajax.post", $f("server", "editions/addPaintingsEditions"), {
+            paintings_id: paintings_id,
+            editionNum:editionNum
+        }, "__.addEditions",paintings_id)();
+
+
+
+    });
+
+
+    $f("df", "__.addEditions", function (_data, paintings_id) {
+
+        console.log(_data.affectedRows);
+        if (_data.affectedRows == 1) {
+            alert("添加成功");
+            $f('plugin', 'paintings.paintingsEdition.list', {paintings_id:paintings_id,page:1,
+            pageSize:10});
+
+        } else {
+            alert("添加失败");
+        }
+
+    });
+
+</script>

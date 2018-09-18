@@ -1,0 +1,25 @@
+<template>
+    <div style="margin: 10px">
+        <h2 style="text-align: center">周东申教授版画展</h2>
+        <img src="img/xuanchuan.jpg" style="width: 100%;margin-top: 10px;">
+
+        <!--<div style="text-align: center;margin: 10px;color: #57cf56;">-->
+            <!--<span>写留言</span>-->
+        <!--</div>-->
+        <div id="liuyan_content">
+
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+        var data = {data: _data};
+        $f("plugin","message",{type:4,id:data.data.id});
+        var html = template.render(_page, data);
+        $("#container").html(html);
+
+
+    });
+
+
+</script>

@@ -1,0 +1,160 @@
+<template>
+    <style>
+        .divTop {
+            background: #000 !important;
+            height: 200px;
+            padding: 25px 0px 0px 0px;
+        }
+
+        .divBottom {
+            background: #ccc !important;
+            height: calc(100% - 225px);
+        }
+        .touxiang{
+            height: 100px;
+            width: 100px;
+            border-radius: 50px;
+        }
+        .weixinname{
+            color: #fff;
+            font-size:18px;
+
+
+        }
+        .fuxian{
+            height: 200px;
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            top: 200px;
+            z-index: 333;
+            background: #fff !important;
+            border-radius: 10px;
+            opacity: 0.9
+        }
+
+        ul {
+            margin: 62px 0px 10px 0px;
+        }
+
+        li {
+            float: left;
+            list-style: none;
+            width: 33%;
+            text-align: center;
+
+        }
+
+        li img {
+            width: 34px;
+            margin: 5px;
+
+        }
+
+        li span {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+
+    </style>
+
+    <div class="divTop">
+        <div style="text-align: center;">
+            <img src="{{data.img}}" class="touxiang">
+            <div class="weixinname">
+                <span style="display: block;">{{data.nickname}}</span>
+                <!-- <span >
+                    {{if data.sex==1}}
+                    ♂
+                    {{else}}
+                    ♀
+                    {{/if}}
+                </span> -->
+            </div>
+        </div>
+
+    </div>
+    <div class="divBottom">
+
+
+    </div>
+    <div class="fuxian">
+
+
+        <ul>
+            <li >
+                <a>
+                    <div class="clickimg" onclick="$f('plugin','my.follow.newsList',{page:1,pageSize:10,modleName:'news'})">
+                        <a href="#f->plugin my.follow.newsList {page:1,pageSize:10,modleName:'news'}">
+                        <img src="img/myGuanzhu.png">
+                        </a>
+                    </div>
+                    <span>我的关注</span>
+                </a>
+            </li>
+            <li>
+                <a>
+                    <div class="clickimg" onclick="$f('qidai',0)">
+                        <img src="img/myQiandao.png">
+                    </div>
+                    <span>我的签到</span>
+                </a>
+            </li>
+            <li>
+                <a>
+                    <div class="clickimg" onclick="$f('qidai',0)">
+                        <img src="img/myBaoming.png">
+                    </div>
+                    <span>我的报名</span>
+                </a>
+            </li>
+
+        </ul>
+        <div id="toast" style="display: none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">敬请期待</p>
+            </div>
+        </div>
+
+    </div>
+
+
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+        $("title").html("个人中心");
+        window.history.pushState(null,null,"#f->plugin home 0");
+        window.history.pushState(null,null,"#f->plugin my 0");
+        $("#my").addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        
+        //获取用户信息
+        $f("ajax.get", $f("server", "users/getUserInfo"), {
+        }, "___.userInfo", _page)();
+
+
+    });
+
+    $f("df", "___.userInfo", function (_data, _page) {
+
+
+        var data = {data: _data[0]};
+        var html = template.render(_page, data);
+        $("#container").html(html);
+
+    });
+    $f("df","qidai",function(e){
+        var $toast = $('#toast');
+        if ($toast.css('display') != 'none') return;
+
+        $toast.fadeIn(100);
+        setTimeout(function () {
+            $toast.fadeOut(100);
+        }, 2000);
+    })
+
+
+</script>

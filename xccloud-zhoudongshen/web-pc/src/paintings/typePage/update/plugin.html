@@ -1,0 +1,113 @@
+<template>
+    <div id="updatePaintingsType" class="modal fade" tabindex="-1" role="dialog">
+        <!-- modal-dialog -->
+        <div class="modal-dialog" role="document">
+            <!-- modal-content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">画作类型修改</h4>
+                </div>
+                <div class="modal-body">
+                    <form style="padding-top: 30px" id="paintingsTypeForm">
+
+                        <input type="hidden"  id="paintingsType_id" value="{{data.id}}" >
+
+                        <div class="form-group">
+                            <label for="paintingsType_Name"> 标题</label>
+                            <input type="text" class="form-control" name="paintingsType_Name" id="paintingsType_Name"
+                                   placeholder="请输入画作类型标题" value="{{data.type_name}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="paintingsType_Pid">类型</label>
+                            <select class="form-control" name="paintingsType_Pid" id="paintingsType_Pid">
+
+                                <option  value=6
+                                        {{if data.pid==6}}
+                                         selected
+                                        {{/if}}
+                                >&nbsp; 套装 &nbsp;</option>
+                                <option value=7
+                                        {{if data.pid==7}}
+                                        selected
+                                        {{/if}}
+                                >&nbsp; 系列 &nbsp;</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paintingsType_price">价格</label>
+                            <input type="text" class="form-control" name="price" id="paintingsType_price"
+                                   placeholder="请输入价格" value="{{data.price}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paintingsType_Content">简介</label>
+                            <textarea class="form-control" name="paintingsType_Content" id="paintingsType_Content"
+                                      rows="3" value="{{data.content}}">{{data.content}}</textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary savePaintingsType">保存类型</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var id=_data;
+
+        $f("ajax.get", $f("server", "paintings/selectTypeById"), {id: _data}, "__.selectType", _page,)();
+    });
+    $f("df", "__.selectType", function (_data, _page) {
+        var data = {data: _data[0]};
+        var html = template.render(_page, data);
+        $("#modelDiv").html(html);
+
+        $("#updatePaintingsType").modal("show");
+
+        $(".savePaintingsType").click(function () {
+
+            var paintingsType_id=$("#paintingsType_id").val();//类型id
+
+            var paintingsType_Name = $("#paintingsType_Name").val();//标题
+            if(paintingsType_Name==''){
+                alert(" 标题不能为空 ")
+                return ;
+            }
+            var paintingsType_Pid = $("#paintingsType_Pid").val();//父节点值
+            var price = $("#paintingsType_price").val();
+
+            var paintingsType_Content = $("#paintingsType_Content").val();//内容
+
+            var data = {
+                paintingsType_id:paintingsType_id,
+                paintingsType_Name:paintingsType_Name,
+                paintingsType_Pid:paintingsType_Pid,
+                price:price,
+                paintingsType_Content:paintingsType_Content
+            };
+            $f("ajax.post", $f("server", "paintings/updatePaintingsType"), data, "__.updatePaintingsType")();
+
+        });
+
+    });
+
+
+    //修改成功
+    $f("df", "__.updatePaintingsType", function (_data) {
+        if (_data.affectedRows == 1 ) {
+            alert("修改成功");
+            $("#updatePaintingsType").modal("hide");
+            $f("plugin", "paintings.typePage", 0);
+
+        } else {
+            alert("修改失败");
+        }
+    });
+
+</script>

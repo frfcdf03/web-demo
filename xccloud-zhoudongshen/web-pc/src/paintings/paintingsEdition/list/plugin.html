@@ -1,0 +1,109 @@
+<template>
+    <div style="padding: 0px 15px;">
+      
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col" width="10%">编号</th>
+                    <th scope="col" width="8%">售出状态</th>
+                    <th scope="col" width="15%">出售时间</th>
+                    <th scope="col" width="15%">购买人</th>
+                    <th scope="col" width="15%">购买人电话</th>
+                 
+                    <th scope="col" width="15%">操作</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {{each data as value i}}
+            <tr>
+                <td scope="row">{{value.paintings_editionNum}}</td>       
+                <td scope="row">
+                    {{if value.status==1}}
+                    已售出
+                    {{else}}
+                    未售出
+                    {{/if}}
+                </td>
+                <td scope="row" >{{value.selltime}}</td>
+                <td scope="row">{{value.buyer}}</td>
+                <td scope="row">{{value.buyer_phone}}</td>
+
+
+                <td >
+                    <a class="btn btn-warning btn-sm deleteEdition" id="deleteEdition" data="{{value.paintings_editionNum}}">删除</a>
+                    <a class="btn btn-info btn-sm updataEdition" id="updataEdition" data="{{value.paintings_editionNum}}">修改</a>
+                </td>
+
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+  
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        /* 发送请求获取版本列表 */
+        $f("ajax.get", $f("server", "editions/getEditionList"), { 
+            paintings_id: _data.paintings_id,
+            page:_data.page,
+            pageSize:_data.pageSize
+        }, "__.editionList", _page,_data)();
+
+    });
+
+    // 获取列表信息
+    $f("df", "__.editionList", function (_data, _page,_param) {
+        var data = {data: _data[0]};
+        console.log(data);
+        var html = template.render(_page, data);
+        $("#editionContent").html(html);
+
+        /* 发送请求删除版本 */
+        $(".deleteEdition").click(function(){
+            var editionNum=$(this).attr("data");
+            if(confirm("确认删除吗")) {
+                $f("ajax.get", $f("server", "editions/delpaintingEdition"), {paintings_id:_param.paintings_id,editionNum: editionNum}, "__.deleteEdition", _page,_param.paintings_id,_data[2].currPage)();
+            }
+        });
+
+         /* 发送请求修改版本 */
+         $(".updataEdition").click(function(){
+            var editionNum=$(this).attr("data");
+            var currPage=_data[2].currPage;
+            $f("plugin", "paintings.paintingsEdition.update", {paintings_id:_param.paintings_id,editionNum:editionNum,currPage:currPage });
+          
+        });
+
+
+        //分页
+        $('#callBackPager').extendPagination({
+            totalCount: _data[1][0].totalCount,
+            limit: 10,
+            defaultPage:_data[2].currPage,
+            callback: function (curr, limit, totalCount) {
+                $f("plugin", "paintings.paintingsEdition.list", {paintings_id:_param.paintings_id,page:curr,pageSize:limit});
+            }
+
+        });
+
+
+        
+
+
+    });
+    //删除本条消息
+
+    $f("df", "__.deleteEdition", function (_data,_page,_paintinsId,_curr) {
+        if (_data.affectedRows >= 1) {
+            alert("删除成功");
+            $f('plugin', 'paintings.paintingsEdition.list', {paintings_id:_paintinsId,page:_curr,pageSize:10})
+        } else {
+            alert("删除失败");
+        }
+    });
+   
+</script>
+

@@ -1,0 +1,116 @@
+<template>
+
+
+    <div class="modal fade bs-example-modal-sm" id="updatePrice">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel" style="text-align: left;">修改价格</h4>
+                </div>
+                <div class="modal-body">
+                    <form style="padding-top: 30px" id="newsForm">
+                        <div class="modal-body">
+
+                            <div class="form-group row">
+                                <label  class="col-sm-2 col-form-label">时间：</label>
+                                <div class='input-group date' id='datetimepicker2' >
+                                    <input type="text" class="form-control" name="dateUpdate" id="dateUpdate"
+                                           value="{{data[0].date}}">
+                                    <input type="hidden" name="idUpdate" id="idUpdate" value="{{data[0].id}}">
+                                    <span class="input-group-addon"  >
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label for="priceUpdate" class="col-sm-2 col-form-label">价格：</label>
+                                <div class="input-group" style="width: 83%">
+                                    <input type="text" class="form-control" name="priceUpdate" id="priceUpdate"
+                                           placeholder="请输入价格">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="$f('__.save',{{data[0].item_id}},{{data[0].item_type}})">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+//     $f("plugin.startTest",'__');
+        $f("ajax.get", $f("server", "price/selectById"), {id: _data.id}, "__.update", _page, _data)();
+    });
+    $f("df", "__.update", function (_data, _page, pare) {
+
+        var data = {data: _data};
+        var html = template.render(_page, data)
+        console.log(data);
+        $("#modelDiv").html(html);
+        $("#updatePrice").modal("show");
+
+        //设置日期时间控件
+
+        $('#datetimepicker2').datetimepicker({
+            language: 'zh-CN',//显示中文
+            format: 'yyyy-mm-dd',//显示格式
+            minView: "month",//设置只显示到月份
+            endDate:new Date(),
+            initialDate: new Date(),
+            autoclose: true,//选中自动关闭
+            todayBtn: true,//显示今日按钮
+            locale: moment.locale('zh-cn')
+        });
+        //默认获取当前日期
+        var today = new Date();
+        var dateUpdate = (today.getFullYear()) + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+        //对日期格式进行处理
+        var date = new Date(dateUpdate);
+        var mon = date.getMonth() + 1;
+        var day = date.getDate();
+        var mydate = date.getFullYear() + "-" + (mon < 10 ? "0" + mon : mon) + "-" + (day < 10 ? "0" + day : day);
+        $("#dateUpdate").val(dateUpdate);
+
+    });
+
+
+
+
+    $f("df", "__.save", function (item_id,item_type) {
+         var id=$("#idUpdate").val();
+         var date = $("#dateUpdate").val();
+         var price = $("#priceUpdate").val();
+        $("#updatePrice").modal("hide");
+        $f("ajax.post", $f("server", "price/updatePrice"), {
+            id: id,
+            date: date,
+            price: price,
+        }, "__.updatePrice", {item_id:item_id,item_type:item_type})();
+
+
+    })
+    $f("df", "__.updatePrice", function (_data,pare) {
+
+        if (_data.affectedRows == 1) {
+            alert("修改成功");
+            $f('plugin', 'paintings.paintingsPrice', {id:parseInt(pare.item_id),type:pare.item_type})
+        } else {
+            alert("修改失败");
+        }
+    })
+</script>

@@ -1,0 +1,47 @@
+<template>
+
+
+
+        <div style="width: 100% ; padding-right: 9vw">
+            {{each data}}
+                
+                    <div class="flex__item1" onclick="$f('___.onclickpro', {pid:'{{$value.id}}'})" style=" display: inline-block; width: 32%;text-align: center " data-id=2>
+                        <img style="" src="{{$value.paintings_img}}" class="paintingF">
+                        <span class="paintingName">{{$value.paintings_name.substring(0,6)}}</span>
+                        <span class="paintingSize">规格：{{$value.paintings_spec}}</span>
+                        <span class="paintingSize">创作年代：{{$value.paintings_year.substring(0,4)}}</span>                       
+                    </div>
+                  
+            {{/each}}
+        </div> 
+</template>
+<script>
+ $f("df", ___, function(_page,_data) {
+    var divclass = _data.divclass;
+    var pid = _data.pid;   
+    var classspan =  _data.classspan;
+    
+ $f("ajax.get",$f("server","paintings/listPageCon"), {pid:pid}, "___.listPageCon",_page,divclass,classspan)();
+ });
+
+
+ $f("df","___.listPageCon",function(_data,_page,divclass,classspan){
+     var data={data:_data};
+     
+     //如果返回值是空那么隐藏他的父类 用于隐藏没有画作的套装
+     if(_data==null||_data==""){
+        $("."+classspan).hide();
+     }
+     var html=template.render(_page, data)
+     $("."+divclass).html(html);
+ });
+ 
+ //作品的点击事件
+ $f("df","___.onclickpro",function(pid){
+    var id = pid.pid;
+
+    window.location.href="#f->plugin paintings.detail "+id;
+ })
+
+
+</script>

@@ -1,0 +1,177 @@
+<template>
+
+    <style>
+        iframe{
+               display: none;
+           }   
+    </style>
+
+
+
+    <div class="modal fade bs-example-modal-lg" id="updateNewsModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">修改艺术家信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form style="padding-top: 30px" id="newsForm"action="test" method="POST" enctype="multipart/form-data" target= hidden_frame>
+                        <div class="modal-body">
+
+                            <div class="form-group row">
+                                <label for="titleUpdate" class="col-sm-2 col-form-label">标题：</label>
+                                <div class="col-sm-10">
+                                    <input type="hidden" name="idUpdate" id="idUpdate" value="{{data[0][0].id}}">
+                                    <input type="text" class="form-control" name="titleUpdate" id="titleUpdate"  value="{{data[0][0].title}}">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label for="contentUpdate" class="col-sm-2 col-form-label">当前图片：</label>
+                                <div class="col-sm-10">
+                                <img style="width: 20%" src="{{data[0][0].img_path}}" id="imgPath" data="{{data[0][0].img_path}}">
+                                </div>
+                            </div>
+                            <div class="form-group row" id="uploadForm">
+                                
+                                <label for="exampleInputFile" class="col-sm-2 col-form-label">缩略图： </label>
+                                <div class="col-sm-10">
+                              
+                                <input id="exampleInputFile"  name="myImage" type="file">
+                                <small id="fileHelp" class="form-text text-muted"></small>
+                               
+                                <iframe  name="hidden_frame" id="hidden_frame" onload="$f('__.upload',this)" ></iframe>
+                                <input type="text" class="form-control-file" id="img_path" name="img_path" style="display: none">
+                            </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="contentUpdate" class="col-sm-2 col-form-label">内容：</label>
+                                <div class="col-sm-10">
+                                        <div class="document-editor">
+                                                <div class="document-editor-toolbar"></div>
+                                                <div class="document-editor-editable-container">
+                                                    <div class="document-editor-editable">
+                                                        <p></p>
+                                                    </div>
+                                                </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="updateNews">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</template>
+<script>
+ $f("df", __, function(_page,_data) {
+//     $f("plugin.startTest",'__');
+    currPage=_data.currPage;
+     $f("ajax.get",$f("server","news/selectById"), {id:_data.id}, "__.yml",_page,_data)();
+ });
+ $f("df","__.yml",function(_data,_page,pare){
+
+     var data={data:_data};
+     var html=template.render(_page, data)
+     console.log(data);
+     $("#modelDiv").html(html);
+     var action = $f("server", "upload/main");
+     console.log(action);
+     $('#exampleInputFile').fileinput({language: 'zh'});
+     $('.btn-file').click(function(){
+            $('#fileHelp').html("请上传图片");
+        });
+     $('#newsForm').attr('action',action);
+     $("#updateNewsModal").modal("show");
+
+
+ 
+   //富文本
+   DecoupledEditor
+   .create( document.querySelector( '.document-editor-editable'), {
+            language:"zh-cn",
+
+        })
+             .then(editor=>{
+                var toolbarContainer = document.querySelector('.document-editor-toolbar');
+            toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+                editor.config.allowedContent = true;
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader)=>{
+                    return new UploadAdapter(loader);
+                };
+                  editor.setData(_data[0][0].content)
+                  $("#updateNews").click(function () {
+
+                  var titleUpdate=$("#titleUpdate").val();
+                  var contentUpdate=editor.getData();
+
+                  var imgPath=$("#imgPath").attr("data");
+                  var img_path =$('#img_path').val();
+                  
+                  if (img_path == "" || img_path == null) {
+                       img_path=imgPath;
+                    }else{
+                      img_path="/"+img_path;
+                    }
+                      if (titleUpdate == "" || titleUpdate == null) {
+                          alert("标题不能为空");
+                          return;
+                      }
+                      if (contentUpdate == "<p>&nbsp;</p>") {
+                          alert("内容不能为空");
+                          return;
+                      }
+                    if(confirm){
+                   $("#updateNewsModal").modal("hide");
+                  $f("ajax.post",$f("server","news/updateNews"),{typeUpdate:13,titleUpdate:titleUpdate,contentUpdate:contentUpdate,idUpdate:$("#idUpdate").val(),img_path:img_path} , "__.updateNews",_page,{modleName:pare.modleName})();
+                    } 
+                });
+                   })
+             .catch( error => {
+         console.error( error );
+               })
+               });
+
+ $f("df","__.updateNews",function(_data,_page,pare){
+
+     console.log(_data.affectedRows);
+     if(_data.affectedRows==1){
+         alert("修改成功");
+
+         //$f("plugin", "news.listPage", 0);
+         $f("plugin", "artist.listPage", {page:currPage,pageSize:10,modleName:pare.modleName});
+     }else{
+         alert("修改失败");
+     }
+
+ })
+ $f("df","__.upload",function(tag){
+            var path = $(tag).contents().find('body').html();
+            if(path.length<=0)
+            $('#fileHelp').html("请上传图片");
+            else{
+                if(path=="err empty file!")
+                {
+                  alert("上传图片不能为空！");
+                }
+                else
+                {
+                    $('#fileHelp').html("上传成功");
+                    $('#img_path').val(path);
+                    console.log( $('#img_path').val());
+                }
+            }
+    });
+</script>

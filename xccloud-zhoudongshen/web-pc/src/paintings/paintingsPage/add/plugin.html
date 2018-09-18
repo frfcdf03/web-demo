@@ -1,0 +1,261 @@
+<template>
+
+    <style>
+        .ptypes > span{
+            line-height: 30px;
+        }
+    </style>
+
+        <!-- 新增 modal -->
+        <div id="addPaintingsModel" class="modal fade" tabindex="-1" role="dialog">
+            <!-- modal-dialog -->
+            <div class="modal-dialog" role="document">
+                <!-- modal-content -->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">新增画作</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form style="padding-top: 30px" id="paintingsForm"  method="POST" enctype="multipart/form-data" target= hidden_frame >
+                            <div class="form-group">
+                                <label for="paintings_id">画作编号</label>
+                                <input type="hidden" class="ifpaintings_id"/>
+                                <input type="text" class="form-control" name="paintings_id" id="paintings_id"
+                                       onblur="$f('__.paintingsidvalidation')"
+                                       placeholder="请输入画作编号">
+                            </div>
+                            <div class="form-group">
+                                <label for="paintings_name">画作名称</label>
+                                <input type="text" class="form-control" name="paintings_name" id="paintings_name"
+                                       placeholder="请输入画作名称">
+                            </div>
+                            <div class="form-group">
+                                <label for="paintings_spec">画作规格</label>
+                                <input type="text" class="form-control" name="paintings_spec" id="paintings_spec"
+                                       placeholder="请输入画作规格">
+                            </div>
+                            <div class="form-group">
+                                <label for="paintings_year">画作年份</label>
+                                <input type="text" class="form-control" name="paintings_year" id="paintings_year"
+                                       placeholder="请输入画作年份">
+                            </div>
+                            <div class="form-group">
+                                <label for="paintings_img">画作图片地址</label>
+
+                                <input id="paintingsInputFile"  name="myImage" type="file">
+                                <small id="fileHelp" class="form-text text-muted"></small>
+
+                                <iframe style="display: none" name="hidden_frame" id="hidden_frame" onload="$f('__.upload',this)" ></iframe>
+
+                                <input id="paintings_img" type="hidden" name="paintings_img">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="paintings_state">是否上架</label>
+                                <select class="form-control" id="paintings_state">
+                                    <option value=1>&nbsp; 是 &nbsp;</option>
+                                    <option value=0>&nbsp; 否 &nbsp;</option>
+                                </select>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="paintings_content">简介</label>
+                                
+                                        <div class="document-editor">
+                                                <div class="document-editor-toolbar"></div>
+                                                <div class="document-editor-editable-container">
+                                                    <div class="document-editor-editable">
+                                                        <p></p>
+                                                    </div>
+                                                </div>
+                                
+                            </div>
+
+                            <div class="form-group">
+                                <label >画作分类(请在下方点击选择类型)</label>
+                            </div>
+                            
+                            <div class="ptypes">
+
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary savePaintings">保存画作</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        var html=template.render(_page,_data);
+
+        //加载类型
+        $f("plugin", "paintings.paintingsPage.showType", {paintings_type:""});
+        $("#modelDiv").html(html);
+
+        var action = $f("server", "upload/main");
+        $('#paintingsInputFile').fileinput({language: 'zh'});
+        $('.btn-file').click(function(){
+            $('#fileHelp').html("请上传图片");
+        });
+        $('#paintingsForm').attr('action',action);
+        
+        $("#addPaintingsModel").modal("show");
+
+       
+
+ DecoupledEditor
+        .create( document.querySelector( '.document-editor-editable'), {
+            language:"zh-cn",
+
+        })
+            .then(editor => {
+                
+           var toolbarContainer = document.querySelector('.document-editor-toolbar');
+            toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+                editor.config.allowedContent = true;
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader)=>{
+                    return new UploadAdapter(loader);
+                };
+                //保存画作
+                $(".savePaintings").click(function () {
+
+                    var paintings_typeStr="";
+                    var ptypeArr=  $(".ptype.ptypeok");
+                    var ptypeArrlength=ptypeArr.length;
+                    if(ptypeArrlength<1){
+                        paintings_typeStr="11"//11表示为单品
+
+                    }
+                    ptypeArr.each(function(i){
+                        if (i === ptypeArrlength - 1)
+                        {
+                            paintings_typeStr = paintings_typeStr + $(this).attr("data") ;
+                        }else {
+                            paintings_typeStr = paintings_typeStr + $(this).attr("data") +",";
+                        }
+                        // return paintings_typeStr;
+                    })
+
+                    var paintings_id = $("#paintings_id").val();
+                    if(paintings_id==""){
+                        alert("画作编号不能为空！");
+                        return;
+                    };
+                    var ifpaintings_id =  $(".ifpaintings_id").val();
+                    if(ifpaintings_id=="存在重复画作编号"){
+                        alert("存在重复画作编号,请重写编号！")
+                        return ;
+                    }
+                    var paintings_name = $("#paintings_name").val();
+                    if(paintings_name==""){
+                        paintings_name=" ";
+                        return;
+                    };
+
+                    var paintings_img = $("#paintings_img").val();
+                    if(paintings_img==""){
+                        paintings_img=" ";
+                    }else {
+                        paintings_img="/"+paintings_img;
+                    };
+                    var paintings_state = $("#paintings_state").val();
+                    if(paintings_state==""){
+                        paintings_state=1
+                    };
+                    var paintings_spec = $("#paintings_spec").val();
+                    if(paintings_spec==""){
+                        paintings_spec=" ";
+                    };
+                    var paintings_year = $("#paintings_year").val();
+                    if(paintings_year==""){
+                        var myDate = new Date();
+                        paintings_year = myDate.getFullYear(); //获取完整的年份(4位,1970-????)
+                    };
+
+                    var paintings_type=paintings_typeStr;
+                    var paintings_content=editor.getData();
+                    if (paintings_content == "<p>&nbsp;</p>") {
+                        alert("内容不能为空");
+                        return;
+                    }
+                    var data = {
+                        paintings_id: paintings_id,
+                        paintings_name: paintings_name,
+                        paintings_type: paintings_type ,
+                        paintings_img: paintings_img,
+                        paintings_state: paintings_state,
+                        paintings_spec: paintings_spec,
+                        paintings_year: paintings_year,
+                        paintings_content:paintings_content
+                    };
+
+                    $("#addPaintingsModel").hide();
+                    $f("ajax.post", $f("server", "paintings/addPaintings"), {
+                        data: data
+                    }, "__.saveEnd")();
+                });
+            } )
+            .catch( error => {
+                console.error( error );
+            } );
+
+
+    });
+
+
+    //保存画作
+    $f("df", "__.saveEnd", function (_data) {
+        var data = _data;
+        if (data.affectedRows>0) {
+            alert("保存成功！");
+
+            $f("plugin", "paintings.paintingsPage", 0);
+            $(".modal-backdrop").hide();
+        } else {
+            alert("保存失败！");
+        }
+    });
+    $f("df","__.upload",function(tag){
+        var path = $(tag).contents().find('body').html();
+        if(path.length<=0)
+            $('#fileHelp').html("请上传图片");
+        else{
+            if(path=="err empty file!")
+            {
+                alert("上传图片不能为空！");
+            }
+            else
+            {
+                $('#fileHelp').html("上传成功");
+                $('#paintings_img').val(path);
+
+            }
+        }
+    });
+     
+    //验证画作编号是否重复
+     $f("df","__.paintingsidvalidation",function(){
+        var paintings_id = $("#paintings_id").val();
+        //alert(paintingsType_Name)
+        $f("ajax.get", $f("server", "paintings/paintingsidvalidation"),{paintings_id:paintings_id}, "__.validation")();
+    })
+    $f("df","__.validation",function(_data){
+        
+        if(_data[0].count!=0){
+            $(".ifpaintings_id").val("存在重复画作编号");
+        }else{
+            $(".ifpaintings_id").val("不存在重复画作编号");
+        }
+    })
+
+</script>

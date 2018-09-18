@@ -1,0 +1,135 @@
+<template>
+    <style>
+        .toBottom {
+            display: inline-block;
+            position: relative;
+            top: 14px;
+            font-size: 12px;
+
+        }
+    </style>
+    <div class="page">
+        <div class="page__bd">
+            {{each data[0] as value i}}
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__bd">
+
+                        <div class="weui-media-box weui-media-box_text">
+                            <a href="#f->plugin faxian.news.detail {{value.id}}">
+                            <h4 class="weui-media-box__title">{{value.title}}</h4>
+                            {{if value.content.length>70}}
+                            <div class="weui-media-box__desc">
+                                {{#value.content.substring(0,70)}}...
+                            </div>
+                            {{/if}}
+                            {{if value.content.length<=100}}
+                            <div class="weui-media-box__desc">
+                                {{#value.content}}
+                            </div>
+                            {{/if}}
+
+                        </a>
+                            <p class="toBottom" style=" color: #6a78dc;"> {{value.type_name}}</p>
+                            <p class="toBottom" style=" color: #999;"> {{value.creat_time.substring(0,10)}}</p>
+                          
+
+                            <ul class="weui-media-box__info" style="float: right">
+                                <li class="weui-media-box__info__meta " follow ="{{value.follow}}" data="{{value.id}}" data2 ="{{value.type_id}}" onclick = "$f('follow',this,0)">
+                                    {{if value.follow==0}}
+                                    <img src="img/icons8-heart-26.png" style="height:22px;">
+                                    <span>关注</span>
+                                    {{else}}
+                                    <img src="img/icons8-heart-filled-50.png" style="height:22px;">
+                                    <span>已关注</span>
+                                    {{/if}}
+        
+                                </li>
+                                <!--<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">-->
+                                        <!--<img src="img/xiaoxi.png" style="height:22px;">24-->
+                                <!--</li>-->
+
+
+                            </ul>
+
+                        </div>
+
+                </div>
+
+            </div>
+            {{/each}}
+            <div id="onActivityPageList">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="slidebox" class="slideBox mui-grid-view" style="bottom: 3rem!important;margin-left: -200%">
+        <div class="weui-loadmore">
+            <i class="weui-loading"></i>
+            <span class="weui-loadmore__tips">正在加载</span>
+        </div>
+    </div>
+
+    <div id="slideboxzu" class="slideBox mui-grid-view" style="bottom: 3rem!important;margin-left: -200%">
+        <div class="weui-loadmore">
+            <span class="weui-loadmore__tips">暂无数据</span>
+        </div>
+    </div>
+
+
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+//     $f("plugin.startTest",'__');
+        
+        window.history.pushState(null,null,"#f->plugin home 0");
+        window.history.pushState(null,null,"#f->plugin faxian.activity.onActivity.newsList {page:1,pageSize:10,modleName:'onActivity'}");
+            if(typeof(_data)!="object"){
+            var _data=eval("("+_data+")");
+            }
+        $f("ajax.get", $f("server", "news/getWxNewsList"), {
+            page: _data.page,
+            pageSize: _data.pageSize,
+            modleName: _data.modleName
+        }, "___.newsList", _page, _data)();
+    });
+    $f("df", "___.newsList", function (_data, _page, pare) {
+
+        var data = {data: _data};
+        var html = template.render(_page, data)
+        console.log(data);
+        if($("#news").length == 0) {
+        $f('plugin','faxian',1);
+        }    
+        $("#news").html(html);
+        //分页
+        $('#oact').addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        var num = 2;
+        var max = _data[1][0].totalCount;
+        $("#container").scroll(function () {
+            var $this = $(this),
+                    viewH = $(this).height(),//可见高度
+                    contentH = $(this).get(0).scrollHeight,//内容高度
+                    scrollTop = $(this).scrollTop();//滚动高度
+            //到达底部20px时,加载新内容
+            if (contentH - viewH - scrollTop <= 20 && (num * 10) <= (max + 9)) {
+                $('#slidebox').animate({'marginLeft': '0px'}, 10);
+                $('#slideboxzu').stop(true).animate({'marginLeft': '-200%'}, 10);
+                $f('plugin', 'faxian.news.newsList.newsPageList', {page: num, pageSize: 10, modleName: pare.modleName})
+
+                /*  setTimeout(function () {
+                 $('#slidebox').animate({'marginLeft': '-200%'}, 10);
+                 }, 1500);*/
+                num++;
+            } else {
+                $('#slidebox').stop(true).animate({'marginLeft': '-200%'}, 10);
+                $('#slideboxzu').animate({'marginLeft': '0px'}, 10);
+            }
+
+
+        });
+
+    });
+
+
+</script>

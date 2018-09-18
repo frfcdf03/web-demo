@@ -1,0 +1,51 @@
+<template>
+    <div id="lineChart_content" style="height: 100%">
+        <div id="container" style="height: 100%"></div>
+    </div>
+</template>
+<script>
+
+    
+    $f("df", __, function (_page, _data) {
+        var prices = _data[0];
+
+        var xData = new Array();
+        for(var i=0;i<prices.length;i++){
+            xData.push(prices[i].date.toString().substring(0,10));
+        };
+
+        var sData = new Array();
+        for(var i=0;i<prices.length;i++){
+            sData.push(prices[i].price);
+        };
+        $f("__.yml",xData,sData,_page);
+
+    });
+    $f("df", "__.yml", function (_xData,_sData,_page) {
+        var xData = _xData;
+        var sData = _sData;
+        var html = template.render(_page)
+        $("#lineChart").html(html);
+        //var dom = document.getElementById("container");
+        var dom = $("#container").get(0);
+        var myChart = echarts.init(dom);
+        var app = {};
+        option = null;
+        option = {
+            xAxis: {
+                type: 'category',
+                data: xData
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: sData,
+                type: 'line'
+            }]
+        };;
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+    });
+</script>

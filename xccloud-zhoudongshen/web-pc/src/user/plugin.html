@@ -1,0 +1,41 @@
+<template>
+
+
+    <div id="pContent" style="padding: 0px 15px">
+        <br>
+        <button type="button" class="btn btn-primary" id="addUser" style="float:right;margin:10px 0px">
+            添加
+        </button>
+
+        <div id="listContent">
+
+        </div>
+
+        <div id="modelDiv">
+
+        </div>
+        <div id="callBackPager" style="text-align: center">
+
+        </div>
+    </div>
+</template>
+<script>
+ $f("df", __, function(_page,_data) {
+
+
+     var html=template.render(_page,_data);
+     $("#content").html(html);
+
+     $("#addUser").click(function(){
+         $f("plugin", "user.add",0);
+
+     })
+     //加载列表
+     $f("plugin", "user.search", {page:1,pageSize:10});
+
+
+ });
+
+
+
+</script>

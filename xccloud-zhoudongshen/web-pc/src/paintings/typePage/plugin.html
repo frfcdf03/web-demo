@@ -1,0 +1,147 @@
+<template>
+    <div style="height: 100vh">
+    <!--<aside id="aside">-->
+        <!--<div id="nav" class="nav-collapse" style="width:100%;margin-left: 0px;">-->
+
+            <div style="position: relative;top: 50px;width: 160px;text-align: center;" >
+                <span  >
+                    <button class="btn btn-default" id="addType"  style="height: 25px;width: 40px;padding:0px">增加</button>
+                    <button class="btn btn-default" id="updateType" style="height: 25px;width: 40px;padding:0px">修改</button>
+
+                    <button class="btn btn-default" id="delete_type" style="height: 25px;width:40px;padding:0px">删除</button>
+                </span>
+            </div>
+            <ul class="sidebar-menu" id="nav-accordion" style="display: block; margin-top: 65px">
+
+
+                <li class="mt"  onclick="$f('plugin', 'paintings.paintingsPage',0)">
+                    <a class="paintingsType" id="allType">
+                        <span>全部</span>
+                    </a>
+                </li>
+
+                <li >
+                    <a class="dcjq-parent"  >
+                        <span> 套装</span>
+                    </a>
+                    <ul style="padding-left: 20px">
+                    {{each data as item i}}
+                        {{if i==0}}
+                        {{each item.type_list as sit }}
+                        <li>
+                            <a style="padding:5px 5px;display:inline;" class="paintingsType"  onclick="$f('plugin', 'paintings.paintingsPage',{{sit.type_id}})">{{sit.type_name}}</a>
+                            <input type="checkbox" name="checkbox" value="{{sit.type_id}}" style="position: relative;top: 3px;">
+                        </li>
+                        {{/each}}
+                        {{/if}}
+                    {{/each}}
+                    </ul>
+                </li>
+                <li >
+                    <a class="dcjq-parent">
+                        <span> 系列</span>
+                    </a>
+                    <ul style="padding-left: 20px">
+                        {{each data as item i}}
+                        {{if i==1}}
+                        {{each item.type_list as sit }}
+                        <li >
+                            <a style="padding:5px 5px;display:inline;" class="paintingsType"  onclick="$f('plugin', 'paintings.paintingsPage',{{sit.type_id}})">{{sit.type_name}}</a>
+                            <input type="checkbox" name="checkbox" value="{{sit.type_id}}" style="position: relative;top: 3px;">
+                        </li>
+                        {{/each}}
+                        {{/if}}
+                        {{/each}}
+                    </ul>
+                </li>
+
+                <li   onclick="$f('plugin', 'paintings.paintingsPage',11)">
+                    <a class="dcjq-parent"  >
+                        <span>单品</span>
+                    </a>
+                </li>
+                <li   onclick="$f('plugin', 'paintings.paintingsPage',12)">
+                    <a class="dcjq-parent"  >
+                        <span>金奖作品</span>
+                    </a>
+                </li>
+
+            </ul>
+        <!--</div>-->
+    <!--</aside>-->
+    </div>
+
+
+</template>
+<script>
+    $f("df", __, function (_page,_data) {
+
+        $f("ajax.get", $f("server", "paintings/getPaintingsType"), {}, "__.typePage", _page)();
+
+    });
+
+    $f("df", "__.typePage", function (_data, _page) {
+        var data = {data: _data};
+        console.log(data);
+        var html = template.render(_page, data);
+        // $("#asideList").html(html);
+        $("#typePageDiv").html(html);
+
+
+        //添加类型
+        $("#addType").click(function () {
+            $f("plugin", "paintings.typePage.add", 0);
+        });
+        //修改类型
+        $("#updateType").click(function () {
+            var idsArr=$("input[name='checkbox']:checked");
+            var idslength=idsArr.length;
+            if(idslength<=0){
+                alert("请先选择对象");
+                return ;
+            }else if (idslength>1){
+                alert("仅能选择一个对象进行修改");
+                return ;
+            }else {
+               var id= idsArr.val();
+               $f("plugin", "paintings.typePage.update", id);
+            }
+
+
+        });
+        //删除类型
+        $("#delete_type").click(function () {
+            var type_ids ="";
+            var idsArr=$("input[name='checkbox']:checked");
+            var idslength=idsArr.length;
+            if(idslength<=0){
+                alert("请先选择对象");
+                return ;
+            }
+            idsArr.each(function(i){
+                if (i === idslength - 1)
+                {
+                    type_ids = type_ids + $(this).val() ;
+                }else {
+                    type_ids = type_ids + $(this).val() +",";
+                }
+
+            });
+            if(confirm("确认删除吗")) {
+                $f("ajax.get", $f("server", "paintings/deletePaintingsType"), {type_ids: type_ids}, "__.deletePaintingsType", _page)();
+            }
+        })
+
+
+    });
+    //删除成功
+    $f("df", "__.deletePaintingsType", function (_data) {
+        if (_data.affectedRows>0) {
+            alert("删除了"+_data.affectedRows+"条记录");
+            $f("plugin", "paintings",0);
+        } else {
+            alert("删除失败");
+        }
+    });
+
+</script>

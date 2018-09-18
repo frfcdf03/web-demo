@@ -1,0 +1,51 @@
+<template>
+    {{each data}}
+    {{if $value.img_path!=null}}
+        <a href="#f->plugin faxian.news.detail {{$value.id}}">
+            <div style="background-image: url('{{$value.img_path}}');margin-bottom: 5vw" class="hdzx">
+                <span style="padding-top: 30vw;display: block">
+                <span style="font-size: 20px;color: #fff;display: block;font-weight:bold;overflow: hidden; white-space: nowrap;text-overflow:ellipsis; ">
+                    {{$value.title}}
+                </span>
+                <span style="font-size: 14px;color: #fff;display: block;font-weight:bold">
+                    {{$value.creat_time}}
+                </span>
+                </span>
+            </div>
+        </a>
+    {{/if}}
+    {{if $value.img_path==null}}
+    <a href="#f->plugin faxian.news.detail {{$value.id}}">
+        <div style="background-image: url('img/1-1.png');margin-bottom: 5vw" class="hdzx">
+            <span style="padding-top: 30vw;display: block">
+            <span style="font-size: 20px;color: #fff;display: block;font-weight:bold;overflow: hidden; white-space: nowrap;text-overflow:ellipsis;">
+                {{$value.title}}
+            </span>
+            <span style="font-size: 14px;color: #fff;display: block;font-weight:bold">
+                {{$value.creat_time}}
+            </span>
+            </span>
+        </div>
+    </a>
+{{/if}}
+
+    {{/each}}
+</template>
+<script>
+    $f("df", ___, function(_page,_data) {
+       var divclass = _data.divclass;
+       var pid = _data.pid;   
+       
+    $f("ajax.get",$f("server","news/newsListsByPid"), {pid:pid}, "___.listPageCon",_page,divclass)();
+    });
+   
+   
+    $f("df","___.listPageCon",function(_data,_page,divclass){
+        var data={data:_data};
+        
+        var html=template.render(_page, data)
+        $("."+divclass).html(html);
+    });
+    
+    
+   </script>

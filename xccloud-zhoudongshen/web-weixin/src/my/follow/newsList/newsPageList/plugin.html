@@ -1,0 +1,112 @@
+<template>
+    <style>
+    .toBottom{
+        display: inline-block;
+        position: relative;
+        left: 21px;
+        font-size: 12px;
+    }
+
+    a{
+        color: #000;
+    }
+    .weui-media-box__desc p{
+        display: inline;
+    }
+</style>
+{{each data[0] as value i}}
+{{if value.e_type_id!=0}}
+<div class="weui-panel weui-panel_access">
+    <div class="weui-panel__bd" >
+           
+        <div class="weui-panel weui-panel_access">
+                {{if value.e_type_id != 6 &&  value.e_type_id != 5 &&  value.e_type_id != 0 &&  value.e_type_id != 7 }}
+                <a href="#f->plugin faxian.news.detail {{value.eid}}" class="weui-media-box weui-media-box_appmsg"style="padding-bottom: 0px;">
+                    {{else}}
+                    {{if value.state2 == 1}}    
+                        {{if value.e_type_id == 5}}
+                            <a href="#f->plugin paintings.detail {{value.eid}}" class="weui-media-box weui-media-box_appmsg"style="padding-bottom: 0px;">
+                        {{/if}}  
+                        {{if value.e_type_id == 6}}
+                            <a href="#f->plugin paintings.paintingsList.taozhuangList.detail {{value.eid}}" class="weui-media-box weui-media-box_appmsg"style="padding-bottom: 0px;">
+                        {{/if}}
+                        {{if value.e_type_id == 7}}
+                            <a href="#f->plugin paintings.paintingsList.xilieList.detail {{value.eid}}" class="weui-media-box weui-media-box_appmsg"style="padding-bottom: 0px;">
+                        {{/if}}
+                    {{else}}
+                            <a onclick="alert('已售罄');">
+                    {{/if}}
+                    {{/if}}
+            <!-- <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg"> -->
+                <div class="weui-media-box__hd">
+                    {{if value.img!=null }}
+                    <img class="weui-media-box__thumb" src="{{value.img}}" alt="">
+                    {{else}}
+                    {{if value.e_type_id==1||value.e_type_id==2||value.e_type_id==3}}
+                    <img class="weui-media-box__thumb" src="https://png.icons8.com/ios/100/e74c3c/megaphone-filled.png" alt="">
+                    {{/if}}
+                    {{if value.e_type_id==4}}
+                    <img class="weui-media-box__thumb" src="https://png.icons8.com/color/96/e74c3c/calendar.png">
+                    {{/if}}
+                    {{if value.e_type_id==5||value.e_type_id==6||value.e_type_id==7}}
+                    <img class="weui-media-box__thumb" src="https://png.icons8.com/color/96/e74c3c/picture.png">
+                    {{/if}}
+                    {{/if}}
+
+                </div>
+                <div class="weui-media-box__bd">
+                    <h4 class="weui-media-box__title">{{value.title.substring(0,8)}}</h4>
+                    {{if value.content!=null }}
+                    <span  class="weui-media-box__desc">{{#value.content.split("&nbsp;").join("").substring(0,40)}}</span>
+                    {{else}}
+                    <span  class="weui-media-box__desc">暂无简介</span>
+                    {{/if}}
+                </div>
+            </a>
+        </a>
+                <p class="toBottom" style=" color: #6a78dc;"> {{value.type_name}}</p>
+                <p class="toBottom" style=" color: #999;"> {{if value.create_time != null}}{{value.create_time.substring(0,10)}}{{/if}}</p>
+                <ul class="weui-media-box__info" style="float: right; margin-top: 0px">
+                    <li class="weui-media-box__info__meta " style="margin-bottom: 10px;" follow ="{{value.follow}}" data="{{value.eid}}" data2 ="{{value.e_type_id}}" onclick = "$f('follow',this,0)">
+                        {{if value.follow==0}}
+                        <img src="img/icons8-heart-26.png" style="height:22px;">
+                        <span>关注</span>
+                        {{else}}
+                        <img src="img/icons8-heart-filled-50.png" style="height:22px;">
+                        <span>已关注</span>
+                        {{/if}}
+                        
+                    </li>
+
+                </ul>
+                
+            </div>
+        
+
+
+    </div>
+</div>
+{{/if}}
+{{/each}}
+
+
+</template>
+<script>
+    $f("df", ___, function (_page, _data) {
+
+        $f("ajax.get", $f("server", "users/followingList"), {
+            page: _data.page,
+            pageSize: _data.pageSize,
+            uid: 1
+        }, "___.newsPageList", _page)();
+    });
+    $f("df", "___.newsPageList", function (_data, _page) {
+
+        var data = {data: _data};
+        var html = template.render(_page, data)
+        console.log(data);
+        $("#followPageList").append(html);
+    });
+
+
+</script>
