@@ -2,10 +2,14 @@
 
 1.  Directory Breakdown
 
-backend:Backend Stuffs 
-web-weixin:Frontend Stuff
-wiki:Document for methods
-.gitighore:Filter files for git 
+backend:Backend Stuffs.
+
+web-weixin:Frontend Stuff.
+
+wiki:Document for methods.
+
+.gitighore:Filter files for git.
+
 README:read me!!
 
 1.  Instruction for localhost 
