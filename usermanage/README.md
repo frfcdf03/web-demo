@@ -1,39 +1,22 @@
-# hrframework使用方法
+# Documentation for the User Management Project
 
-1.  目录结构说明
+1.  Directory Breakdown
 
-backend:后台代码位置
-web:前端glup项目位置
-wiki:相关功能说明文档
-.gitighore:版本控制屏蔽文件
-README:说明文档
+    backend:Backend Stuffs.
 
-1.  如何正确打开
-    1.  打开前端项目
-    2.  打开后端项目
-    3.  运行后端项目
-    4.  运行前端项目
-        1.  在web文件夹内打开命令行工具 或 cd 到web文件夹内
-        2.  执行  gulp  命令
-        3.  如果提示安装gulp 自行百度安装gulp。
-        4.  如果提示找不到库，执行 npm install 安装。
+    web-weixin:Frontend Stuff.
 
-2.  开发阶段使用方式
-    1.  开发流程
-        1.  使用hrframe自带yaml文档，或自定义（需要自定义hrframe函数）编写接口测试文档
-        2.  根据接口文档开发前端界面
-        3.  测试前端界面效果
-        4.  根据接口测试后端功能
-        5.  测试后端功能
+    wiki:Document for methods.
+
+    .gitighore:Filter files for git.
+
+    README:read me!!
+
+1.  Instruction for localhost 
+    1.  Open the frontend project.
+    2.  Open the backend project.
+    3.  Run the backend by npm start or any other means.
+    4.  Run the frontend by typing the command "gulp" in the directory.
     
-    2.  连接本地 or 连接远程
-        1.  两种配置方式，根据自身灵活选择
-            1.  使用web/app/server.js 文件来配置远程地址
-            2.  使用gulpfile配置远程地址
-
-1.  实施阶段注意事项
-    1.  整体部署方案为 Nginx 反响代理多个后端。
-    2.  建议将静态文件部署到nginx提高性能。
-    4.  如果有条件，可选择Docker部署，增加灵活性。
-    5.  由于开发过程中不同的plugin访问后台同名的代码，因此部署的时候要对每一个plugin访问的后台地址进行统一修改。或在项目开始阶段进行约定。（hrframework在这个问题上并没有统一处理）
-
+The default port for frontend is 3000
+and 4000 for backend 
